@@ -25,5 +25,5 @@ interface PaginationProps {
   handleCurrentChange: (currentPage: number) => void;
 }
 
-defineProps<PaginationProps>();
+defineProps<PaginationProps>()
 </script>

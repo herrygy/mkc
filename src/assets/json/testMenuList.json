@@ -1,0 +1,142 @@
+{
+  "result": {
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiZXhwIjoxNjkzMTE5ODEzLCJ1c2VySWQiOjF9.FcJQYXBJh9HD4ecdAaALF4UVHBEEQeMpNcp1tD2ZGyU",
+    "userName": "admin",
+    "menuList": [
+      {
+        "path": "/home/index",
+        "name": "home",
+        "component": "/home/index",
+        "meta": {
+          "icon": "HomeFilled",
+          "title": "首页",
+          "isLink": "",
+          "isHide": false,
+          "isFull": false,
+          "isAffix": true,
+          "isKeepAlive": true
+        }
+      },
+      {
+        "path": "/auth",
+        "name": "auth",
+        "redirect": "/auth/menu",
+        "meta": {
+          "icon": "Lock",
+          "title": "权限管理",
+          "isLink": "",
+          "isHide": false,
+          "isFull": false,
+          "isAffix": false,
+          "isKeepAlive": true
+        },
+        "children": [
+          {
+            "path": "/auth/menu",
+            "name": "authMenu",
+            "component": "/auth/menu/index",
+            "meta": {
+              "icon": "Menu",
+              "title": "菜单权限",
+              "isLink": "",
+              "isHide": false,
+              "isFull": false,
+              "isAffix": false,
+              "isKeepAlive": true
+            }
+          },
+          {
+            "path": "/auth/button",
+            "name": "authButton",
+            "component": "/auth/button/index",
+            "meta": {
+              "icon": "Menu",
+              "title": "按钮权限",
+              "isLink": "",
+              "isHide": false,
+              "isFull": false,
+              "isAffix": false,
+              "isKeepAlive": true
+            }
+          }
+        ]
+      },
+      {
+        "menuId": 1,
+        "path": "/system",
+        "component": "/system",
+        "parentId": -1,
+        "menuName": "系统管理",
+        "perms": "/systemManagement",
+        "funcPerms": "",
+        "icon": "Tools",
+        "type": 1,
+        "status": 0,
+        "isShow": 1,
+        "isOutChain": 1,
+        "sort": 1,
+        "children": [
+          {
+            "menuId": 100,
+            "path": "/system/user-manage",
+            "component": "/system/userManage",
+            "parentId": 1,
+            "menuName": "用户管理服务",
+            "perms": "",
+            "funcPerms": "",
+            "icon": "UserFilled",
+            "type": 1,
+            "status": 0,
+            "isShow": 1,
+            "isOutChain": 0,
+            "sort": 1,
+            "children": [
+              {
+                "menuId": 1003,
+                "path": "/system/userManage/user-list",
+                "component": "/system/userManage/userList",
+                "parentId": 100,
+                "menuName": "用户管理列表",
+                "perms": "",
+                "funcPerms": "sysUser_page",
+                "icon": "Menu",
+                "type": 2,
+                "status": 0,
+                "isShow": 1,
+                "isOutChain": 0,
+                "sort": 1,
+                "children": null,
+                "createTime": "2022-05-20 09:00:00",
+                "remark": null
+              },              {
+                "menuId": 1004,
+                "path": "/system/roleManage",
+                "component": "/system/roleManage/index",
+                "parentId": 100,
+                "menuName": "角色管理",
+                "perms": "",
+                "funcPerms": "",
+                "icon": "Menu",
+                "type": 2,
+                "status": 0,
+                "isShow": 1,
+                "isOutChain": 0,
+                "sort": 1,
+                "children": null,
+                "createTime": "2022-05-20 09:00:00",
+                "remark": null
+              }
+            ],
+            "createTime": "2022-05-20 09:00:00",
+            "remark": null
+          }
+        ],
+        "createTime": "2022-05-20 09:00:00",
+        "remark": null
+      }
+    ]
+  },
+  "success": true,
+  "message": "成功",
+  "code": 200
+}

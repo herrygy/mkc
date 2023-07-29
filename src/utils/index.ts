@@ -1,17 +1,19 @@
-import { isArray } from "@/utils/is";
-import { FieldNamesProps } from "@/components/ProTable/interface";
+import { isArray } from '@/utils/is'
+import { FieldNamesProps } from '@/components/ProTable/interface'
+// eslint-disable-next-line no-undef
+import MenuOptions = Menu.MenuOptions;
 
 /**
  * @description 获取localStorage
  * @param {String} key Storage名称
  * @returns {String}
  */
-export function localGet(key: string) {
-  const value = window.localStorage.getItem(key);
+export function localGet (key: string) {
+  const value = window.localStorage.getItem(key)
   try {
-    return JSON.parse(window.localStorage.getItem(key) as string);
+    return JSON.parse(window.localStorage.getItem(key) as string)
   } catch (error) {
-    return value;
+    return value
   }
 }
 
@@ -21,8 +23,8 @@ export function localGet(key: string) {
  * @param {*} value Storage值
  * @returns {void}
  */
-export function localSet(key: string, value: any) {
-  window.localStorage.setItem(key, JSON.stringify(value));
+export function localSet (key: string, value: any) {
+  window.localStorage.setItem(key, JSON.stringify(value))
 }
 
 /**
@@ -30,16 +32,16 @@ export function localSet(key: string, value: any) {
  * @param {String} key Storage名称
  * @returns {void}
  */
-export function localRemove(key: string) {
-  window.localStorage.removeItem(key);
+export function localRemove (key: string) {
+  window.localStorage.removeItem(key)
 }
 
 /**
  * @description 清除所有localStorage
  * @returns {void}
  */
-export function localClear() {
-  window.localStorage.clear();
+export function localClear () {
+  window.localStorage.clear()
 }
 
 /**
@@ -47,49 +49,24 @@ export function localClear() {
  * @param {*} val 需要判断类型的数据
  * @returns {String}
  */
-export function isType(val: any) {
-  if (val === null) return "null";
-  if (typeof val !== "object") return typeof val;
-  else return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase();
+export function isType (val: any) {
+  if (val === null) return 'null'
+  if (typeof val !== 'object') return typeof val
+  else return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase()
 }
 
 /**
  * @description 生成唯一 uuid
  * @returns {String}
  */
-export function generateUUID() {
-  let uuid = "";
+export function generateUUID () {
+  let uuid = ''
   for (let i = 0; i < 32; i++) {
-    let random = (Math.random() * 16) | 0;
-    if (i === 8 || i === 12 || i === 16 || i === 20) uuid += "-";
-    uuid += (i === 12 ? 4 : i === 16 ? (random & 3) | 8 : random).toString(16);
+    const random = (Math.random() * 16) | 0
+    if (i === 8 || i === 12 || i === 16 || i === 20) uuid += '-'
+    uuid += (i === 12 ? 4 : i === 16 ? (random & 3) | 8 : random).toString(16)
   }
-  return uuid;
-}
-
-/**
- * 判断两个对象是否相同
- * @param {Object} a 要比较的对象一
- * @param {Object} b 要比较的对象二
- * @returns {Boolean} 相同返回 true，反之 false
- */
-export function isObjectValueEqual(a: { [key: string]: any }, b: { [key: string]: any }) {
-  if (!a || !b) return false;
-  let aProps = Object.getOwnPropertyNames(a);
-  let bProps = Object.getOwnPropertyNames(b);
-  if (aProps.length != bProps.length) return false;
-  for (let i = 0; i < aProps.length; i++) {
-    let propName = aProps[i];
-    let propA = a[propName];
-    let propB = b[propName];
-    if (!b.hasOwnProperty(propName)) return false;
-    if (propA instanceof Object) {
-      if (!isObjectValueEqual(propA, propB)) return false;
-    } else if (propA !== propB) {
-      return false;
-    }
-  }
-  return true;
+  return uuid
 }
 
 /**
@@ -98,38 +75,71 @@ export function isObjectValueEqual(a: { [key: string]: any }, b: { [key: string]
  * @param {Number} max 最大值
  * @returns {Number}
  */
-export function randomNum(min: number, max: number): number {
-  let num = Math.floor(Math.random() * (min - max) + max);
-  return num;
+export function randomNum (min: number, max: number): number {
+  const num = Math.floor(Math.random() * (min - max) + max)
+  return num
 }
 
 /**
  * @description 获取当前时间对应的提示语
  * @returns {String}
  */
-export function getTimeState() {
-  let timeNow = new Date();
-  let hours = timeNow.getHours();
-  if (hours >= 6 && hours <= 10) return `早上好 ⛅`;
-  if (hours >= 10 && hours <= 14) return `中午好 🌞`;
-  if (hours >= 14 && hours <= 18) return `下午好 🌞`;
-  if (hours >= 18 && hours <= 24) return `晚上好 🌛`;
-  if (hours >= 0 && hours <= 6) return `凌晨好 🌛`;
+export function getTimeState () {
+  const timeNow = new Date()
+  const hours = timeNow.getHours()
+  if (hours >= 6 && hours <= 10) return '早上好 ⛅'
+  if (hours >= 10 && hours <= 14) return '中午好 🌞'
+  if (hours >= 14 && hours <= 18) return '下午好 🌞'
+  if (hours >= 18 && hours <= 24) return '晚上好 🌛'
+  if (hours >= 0 && hours <= 6) return '凌晨好 🌛'
 }
 
 /**
  * @description 获取浏览器默认语言
  * @returns {String}
  */
-export function getBrowserLang() {
-  let browserLang = navigator.language ? navigator.language : navigator.browserLanguage;
-  let defaultBrowserLang = "";
-  if (["cn", "zh", "zh-cn"].includes(browserLang.toLowerCase())) {
-    defaultBrowserLang = "zh";
+export function getBrowserLang () {
+  const browserLang = navigator.language ? navigator.language : navigator.browserLanguage
+  let defaultBrowserLang = ''
+  if (['cn', 'zh', 'zh-cn'].includes(browserLang.toLowerCase())) {
+    defaultBrowserLang = 'zh'
   } else {
-    defaultBrowserLang = "en";
+    defaultBrowserLang = 'en'
   }
-  return defaultBrowserLang;
+  return defaultBrowserLang
+}
+
+export function formatMenu (menuList, parentNode) {
+  const newList = []
+  for (let i = 0; i < menuList.length; i++) {
+    if (menuList[i].menuId) {
+      parentNode = {
+        path: menuList[i].path,
+        component: menuList[i].component,
+        name: menuList[i].menuId,
+        children: menuList[i].children,
+        meta: {
+          icon: menuList[i].icon,
+          title: menuList[i].menuName,
+          isLink: menuList[i].isOutChain === 1,
+          isFull: false,
+          isAffix: false,
+          isKeepAlive: true,
+          isHide: menuList[i].isShow !== 1,
+          sort: menuList[i].sort,
+          menuId: menuList[i].menuId
+        }
+      }
+    } else {
+      parentNode = JSON.parse(JSON.stringify(menuList[i]))
+    }
+
+    if (menuList[i].children) {
+      parentNode.children = formatMenu(menuList[i].children, menuList[i])
+    }
+    newList.push(parentNode)
+  }
+  return newList
 }
 
 /**
@@ -137,9 +147,9 @@ export function getBrowserLang() {
  * @param {Array} menuList 菜单列表
  * @returns {Array}
  */
-export function getFlatMenuList(menuList: Menu.MenuOptions[]): Menu.MenuOptions[] {
-  let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
-  return newMenuList.flatMap(item => [item, ...(item.children ? getFlatMenuList(item.children) : [])]);
+export function getFlatMenuList (menuList: MenuOptions[]): MenuOptions[] {
+  const newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList))
+  return newMenuList.flatMap(item => [item, ...(item.children ? getFlatMenuList(item.children) : [])])
 }
 
 /**
@@ -147,12 +157,12 @@ export function getFlatMenuList(menuList: Menu.MenuOptions[]): Menu.MenuOptions[
  * @param {Array} menuList 菜单列表
  * @returns {Array}
  * */
-export function getShowMenuList(menuList: Menu.MenuOptions[]) {
-  let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
+export function getShowMenuList (menuList: MenuOptions[]) {
+  const newMenuList: MenuOptions[] = JSON.parse(JSON.stringify(menuList))
   return newMenuList.filter(item => {
-    item.children?.length && (item.children = getShowMenuList(item.children));
-    return !item.meta?.isHide;
-  });
+    item.children?.length && (item.children = getShowMenuList(item.children))
+    return !item.meta?.isHide
+  })
 }
 
 /**
@@ -162,13 +172,13 @@ export function getShowMenuList(menuList: Menu.MenuOptions[]) {
  * @param {Object} result 处理后的结果
  * @returns {Object}
  */
-export const getAllBreadcrumbList = (menuList: Menu.MenuOptions[], parent = [], result: { [key: string]: any } = {}) => {
+export const getAllBreadcrumbList = (menuList: MenuOptions[], parent = [], result: { [key: string]: any } = {}) => {
   for (const item of menuList) {
-    result[item.path] = [...parent, item];
-    if (item.children) getAllBreadcrumbList(item.children, result[item.path], result);
+    result[item.path] = [...parent, item]
+    if (item.children) getAllBreadcrumbList(item.children, result[item.path], result)
   }
-  return result;
-};
+  return result
+}
 
 /**
  * @description 使用递归处理路由菜单 path，生成一维数组 (第一版本地路由鉴权会用到，该函数暂未使用)
@@ -176,12 +186,12 @@ export const getAllBreadcrumbList = (menuList: Menu.MenuOptions[], parent = [], 
  * @param {Array} menuPathArr 菜单地址的一维数组 ['**','**']
  * @returns {Array}
  */
-export function getMenuListPath(menuList: Menu.MenuOptions[], menuPathArr: string[] = []): string[] {
+export function getMenuListPath (menuList: MenuOptions[], menuPathArr: string[] = []): string[] {
   for (const item of menuList) {
-    if (typeof item === "object" && item.path) menuPathArr.push(item.path);
-    if (item.children?.length) getMenuListPath(item.children, menuPathArr);
+    if (typeof item === 'object' && item.path) menuPathArr.push(item.path)
+    if (item.children?.length) getMenuListPath(item.children, menuPathArr)
   }
-  return menuPathArr;
+  return menuPathArr
 }
 
 /**
@@ -190,15 +200,15 @@ export function getMenuListPath(menuList: Menu.MenuOptions[], menuPathArr: strin
  * @param {String} path 当前访问地址
  * @returns {Object | null}
  */
-export function findMenuByPath(menuList: Menu.MenuOptions[], path: string): Menu.MenuOptions | null {
+export function findMenuByPath (menuList: MenuOptions[], path: string): MenuOptions | null {
   for (const item of menuList) {
-    if (item.path === path) return item;
+    if (item.path === path) return item
     if (item.children) {
-      const res = findMenuByPath(item.children, path);
-      if (res) return res;
+      const res = findMenuByPath(item.children, path)
+      if (res) return res
     }
   }
-  return null;
+  return null
 }
 
 /**
@@ -207,12 +217,12 @@ export function findMenuByPath(menuList: Menu.MenuOptions[], path: string): Menu
  * @param {Array} keepAliveNameArr 缓存的菜单 name ['**','**']
  * @returns {Array}
  * */
-export function getKeepAliveRouterName(menuList: Menu.MenuOptions[], keepAliveNameArr: string[] = []) {
+export function getKeepAliveRouterName (menuList: MenuOptions[], keepAliveNameArr: string[] = []) {
   menuList.forEach(item => {
-    item.meta.isKeepAlive && item.name && keepAliveNameArr.push(item.name);
-    item.children?.length && getKeepAliveRouterName(item.children, keepAliveNameArr);
-  });
-  return keepAliveNameArr;
+    item.meta.isKeepAlive && item.name && keepAliveNameArr.push(item.name)
+    item.children?.length && getKeepAliveRouterName(item.children, keepAliveNameArr)
+  })
+  return keepAliveNameArr
 }
 
 /**
@@ -222,10 +232,10 @@ export function getKeepAliveRouterName(menuList: Menu.MenuOptions[], keepAliveNa
  * @param {*} callValue 当前单元格值
  * @returns {String}
  * */
-export function formatTableColumn(row: number, col: number, callValue: any) {
+export function formatTableColumn (row: number, col: number, callValue: any) {
   // 如果当前值为数组，使用 / 拼接（根据需求自定义）
-  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
-  return callValue ?? "--";
+  if (isArray(callValue)) return callValue.length ? callValue.join(' / ') : '--'
+  return callValue ?? '--'
 }
 
 /**
@@ -233,10 +243,10 @@ export function formatTableColumn(row: number, col: number, callValue: any) {
  * @param {*} callValue 需要处理的值
  * @returns {String}
  * */
-export function formatValue(callValue: any) {
+export function formatValue (callValue: any) {
   // 如果当前值为数组，使用 / 拼接（根据需求自定义）
-  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
-  return callValue ?? "--";
+  if (isArray(callValue)) return callValue.length ? callValue.join(' / ') : '--'
+  return callValue ?? '--'
 }
 
 /**
@@ -245,10 +255,10 @@ export function formatValue(callValue: any) {
  * @param {String} prop 当前 prop
  * @returns {*}
  * */
-export function handleRowAccordingToProp(row: { [key: string]: any }, prop: string) {
-  if (!prop.includes(".")) return row[prop] ?? "--";
-  prop.split(".").forEach(item => (row = row[item] ?? "--"));
-  return row;
+export function handleRowAccordingToProp (row: { [key: string]: any }, prop: string) {
+  if (!prop.includes('.')) return row[prop] ?? '--'
+  prop.split('.').forEach(item => (row = row[item] ?? '--'))
+  return row
 }
 
 /**
@@ -256,10 +266,10 @@ export function handleRowAccordingToProp(row: { [key: string]: any }, prop: stri
  * @param {String} prop 当前 prop
  * @returns {String}
  * */
-export function handleProp(prop: string) {
-  const propArr = prop.split(".");
-  if (propArr.length == 1) return prop;
-  return propArr[propArr.length - 1];
+export function handleProp (prop: string) {
+  const propArr = prop.split('.')
+  if (propArr.length === 1) return prop
+  return propArr[propArr.length - 1]
 }
 
 /**
@@ -270,28 +280,29 @@ export function handleProp(prop: string) {
  * @param {String} type 过滤类型（目前只有 tag）
  * @returns {String}
  * */
-export function filterEnum(callValue: any, enumData?: any, fieldNames?: FieldNamesProps, type?: "tag") {
-  const value = fieldNames?.value ?? "value";
-  const label = fieldNames?.label ?? "label";
-  const children = fieldNames?.children ?? "children";
-  let filterData: { [key: string]: any } = {};
+export function filterEnum (callValue: any, enumData?: any, fieldNames?: FieldNamesProps, type?: 'tag') {
+  const value = fieldNames?.value ?? 'value'
+  const label = fieldNames?.label ?? 'label'
+  const children = fieldNames?.children ?? 'children'
+  let filterData: { [key: string]: any } = {}
   // 判断 enumData 是否为数组
-  if (Array.isArray(enumData)) filterData = findItemNested(enumData, callValue, value, children);
+  if (Array.isArray(enumData)) filterData = findItemNested(enumData, callValue, value, children)
   // 判断是否输出的结果为 tag 类型
-  if (type == "tag") {
-    return filterData?.tagType ? filterData.tagType : "";
+  if (type === 'tag') {
+    return filterData?.tagType ? filterData.tagType : ''
   } else {
-    return filterData ? filterData[label] : "--";
+    return filterData ? filterData[label] : '--'
   }
 }
 
 /**
  * @description 递归查找 callValue 对应的 enum 值
  * */
-export function findItemNested(enumData: any, callValue: any, value: string, children: string) {
+export function findItemNested (enumData: any, callValue: any, value: string, children: string) {
+  // eslint-disable-next-line array-callback-return
   return enumData.reduce((accumulator: any, current: any) => {
-    if (accumulator) return accumulator;
-    if (current[value] === callValue) return current;
-    if (current[children]) return findItemNested(current[children], callValue, value, children);
-  }, null);
+    if (accumulator) return accumulator
+    if (current[value] === callValue) return current
+    if (current[children]) return findItemNested(current[children], callValue, value, children)
+  }, null)
 }

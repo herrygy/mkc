@@ -44,11 +44,11 @@
 </template>
 
 <script setup lang="ts" name="UploadImgs">
-import { ref, computed, inject, watch } from "vue";
-import { Plus } from "@element-plus/icons-vue";
-import { uploadImg } from "@/api/modules/upload";
-import type { UploadProps, UploadFile, UploadUserFile, UploadRequestOptions } from "element-plus";
-import { ElNotification, formContextKey, formItemContextKey } from "element-plus";
+import { ref, computed, inject, watch } from 'vue'
+import { Plus } from '@element-plus/icons-vue'
+import { uploadImg } from '@/api/modules/upload'
+import type { UploadProps, UploadFile, UploadUserFile, UploadRequestOptions } from 'element-plus'
+import { ElNotification, formContextKey, formItemContextKey } from 'element-plus'
 
 interface UploadFileProps {
   fileList: UploadUserFile[];
@@ -69,70 +69,72 @@ const props = withDefaults(defineProps<UploadFileProps>(), {
   disabled: false,
   limit: 5,
   fileSize: 5,
-  fileType: () => ["image/jpeg", "image/png", "image/gif"],
-  height: "150px",
-  width: "150px",
-  borderRadius: "8px"
-});
+  fileType: () => ['image/jpeg', 'image/png', 'image/gif'],
+  height: '150px',
+  width: '150px',
+  borderRadius: '8px'
+})
 
 // 获取 el-form 组件上下文
-const formContext = inject(formContextKey, void 0);
+const formContext = inject(formContextKey, void 0)
 // 获取 el-form-item 组件上下文
-const formItemContext = inject(formItemContextKey, void 0);
+const formItemContext = inject(formItemContextKey, void 0)
 // 判断是否禁用上传和删除
 const self_disabled = computed(() => {
-  return props.disabled || formContext?.disabled;
-});
+  return props.disabled || formContext?.disabled
+})
 
-const _fileList = ref<UploadUserFile[]>(props.fileList);
+const _fileList = ref<UploadUserFile[]>(props.fileList)
 
 // 监听 props.fileList 列表默认值改变
 watch(
   () => props.fileList,
   (n: UploadUserFile[]) => {
-    _fileList.value = n;
+    _fileList.value = n
   }
-);
+)
 
 /**
  * @description 文件上传之前判断
  * @param rawFile 选择的文件
  * */
-const beforeUpload: UploadProps["beforeUpload"] = rawFile => {
-  const imgSize = rawFile.size / 1024 / 1024 < props.fileSize;
-  const imgType = props.fileType.includes(rawFile.type as File.ImageMimeType);
-  if (!imgType)
+const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
+  const imgSize = rawFile.size / 1024 / 1024 < props.fileSize
+  const imgType = props.fileType.includes(rawFile.type as File.ImageMimeType)
+  if (!imgType) {
     ElNotification({
-      title: "温馨提示",
-      message: "上传图片不符合所需的格式！",
-      type: "warning"
-    });
-  if (!imgSize)
+      title: '温馨提示',
+      message: '上传图片不符合所需的格式！',
+      type: 'warning'
+    })
+  }
+  if (!imgSize) {
     setTimeout(() => {
       ElNotification({
-        title: "温馨提示",
+        title: '温馨提示',
         message: `上传图片大小不能超过 ${props.fileSize}M！`,
-        type: "warning"
-      });
-    }, 0);
-  return imgType && imgSize;
-};
+        type: 'warning'
+      })
+    }, 0)
+  }
+  return imgType && imgSize
+}
 
 /**
  * @description 图片上传
  * @param options upload 所有配置项
  * */
 const handleHttpUpload = async (options: UploadRequestOptions) => {
-  let formData = new FormData();
-  formData.append("file", options.file);
+  const formData = new FormData()
+  formData.append('file', options.file)
   try {
-    const api = props.api ?? uploadImg;
-    const { data } = await api(formData);
-    options.onSuccess(data);
+    const api = props.api ?? uploadImg
+    const { data } = await api(formData)
+    options.onSuccess(data)
   } catch (error) {
-    options.onError(error as any);
+    options.onError(error as any)
   }
-};
+}
 
 /**
  * @description 图片上传成功
@@ -140,63 +142,63 @@ const handleHttpUpload = async (options: UploadRequestOptions) => {
  * @param uploadFile 上传的文件
  * */
 interface UploadEmits {
-  (e: "update:fileList", value: UploadUserFile[]): void;
+  (e: 'update:fileList', value: UploadUserFile[]): void;
 }
-const emit = defineEmits<UploadEmits>();
+const emit = defineEmits<UploadEmits>()
 const uploadSuccess = (response: { fileUrl: string } | undefined, uploadFile: UploadFile) => {
-  if (!response) return;
-  uploadFile.url = response.fileUrl;
-  emit("update:fileList", _fileList.value);
+  if (!response) return
+  uploadFile.url = response.fileUrl
+  emit('update:fileList', _fileList.value)
   // 调用 el-form 内部的校验方法（可自动校验）
-  formItemContext?.prop && formContext?.validateField([formItemContext.prop as string]);
+  formItemContext?.prop && formContext?.validateField([formItemContext.prop as string])
   ElNotification({
-    title: "温馨提示",
-    message: "图片上传成功！",
-    type: "success"
-  });
-};
+    title: '温馨提示',
+    message: '图片上传成功！',
+    type: 'success'
+  })
+}
 
 /**
  * @description 删除图片
  * @param file 删除的文件
  * */
 const handleRemove = (file: UploadFile) => {
-  _fileList.value = _fileList.value.filter(item => item.url !== file.url || item.name !== file.name);
-  emit("update:fileList", _fileList.value);
-};
+  _fileList.value = _fileList.value.filter(item => item.url !== file.url || item.name !== file.name)
+  emit('update:fileList', _fileList.value)
+}
 
 /**
  * @description 图片上传错误
  * */
 const uploadError = () => {
   ElNotification({
-    title: "温馨提示",
-    message: "图片上传失败，请您重新上传！",
-    type: "error"
-  });
-};
+    title: '温馨提示',
+    message: '图片上传失败，请您重新上传！',
+    type: 'error'
+  })
+}
 
 /**
  * @description 文件数超出
  * */
 const handleExceed = () => {
   ElNotification({
-    title: "温馨提示",
+    title: '温馨提示',
     message: `当前最多只能上传 ${props.limit} 张图片，请移除后上传！`,
-    type: "warning"
-  });
-};
+    type: 'warning'
+  })
+}
 
 /**
  * @description 图片预览
  * @param file 预览的文件
  * */
-const viewImageUrl = ref("");
-const imgViewVisible = ref(false);
-const handlePictureCardPreview: UploadProps["onPreview"] = file => {
-  viewImageUrl.value = file.url!;
-  imgViewVisible.value = true;
-};
+const viewImageUrl = ref('')
+const imgViewVisible = ref(false)
+const handlePictureCardPreview: UploadProps['onPreview'] = file => {
+  viewImageUrl.value = file.url!
+  imgViewVisible.value = true
+}
 </script>
 
 <style scoped lang="scss">

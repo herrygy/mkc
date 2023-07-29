@@ -1,17 +1,18 @@
-import { defineStore } from "pinia";
-import { AuthState } from "@/stores/interface";
-import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
-import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList } from "@/utils";
+import { defineStore } from 'pinia'
+import { AuthState } from '@/stores/interface'
+import { getAuthButtonListApi, getAuthMenuListApi } from '@/api/modules/login'
+import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList, formatMenu } from '@/utils'
 
 export const useAuthStore = defineStore({
-  id: "geeker-auth",
+  id: 'geeker-auth',
   state: (): AuthState => ({
     // 按钮权限列表
     authButtonList: {},
     // 菜单权限列表
     authMenuList: [],
     // 当前页面的 router name，用来做按钮权限筛选
-    routeName: ""
+    routeName: '',
+    permissions: ['*:*:*']
   }),
   getters: {
     // 按钮权限列表
@@ -26,19 +27,24 @@ export const useAuthStore = defineStore({
     breadcrumbListGet: state => getAllBreadcrumbList(state.authMenuList)
   },
   actions: {
+    setMenuList (list) {
+      this.authMenuList = formatMenu(list, {})
+    },
     // Get AuthButtonList
-    async getAuthButtonList() {
-      const { data } = await getAuthButtonListApi();
-      this.authButtonList = data;
+    async getAuthButtonList () {
+      const { data } = await getAuthButtonListApi()
+      this.authButtonList = data
     },
     // Get AuthMenuList
-    async getAuthMenuList() {
-      const { data } = await getAuthMenuListApi();
-      this.authMenuList = data;
+    async getAuthMenuList () {
+      const { result } = await getAuthMenuListApi()
+      console.log(result)
+      this.authMenuList = formatMenu(result.menuList, {})
+      console.log(this.authMenuList)
     },
     // Set RouteName
-    async setRouteName(name: string) {
-      this.routeName = name;
+    async setRouteName (name: string) {
+      this.routeName = name
     }
   }
-});
+})

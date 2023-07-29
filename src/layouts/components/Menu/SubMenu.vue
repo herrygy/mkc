@@ -1,5 +1,5 @@
 <template>
-  <template v-for="subItem in menuList" :key="subItem.path">
+  <div v-for="subItem in menuList" :key="subItem.path">
     <el-sub-menu v-if="subItem.children?.length" :index="subItem.path">
       <template #title>
         <el-icon>
@@ -17,19 +17,20 @@
         <span class="sle">{{ subItem.meta.title }}</span>
       </template>
     </el-menu-item>
-  </template>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router'
 
-defineProps<{ menuList: Menu.MenuOptions[] }>();
+defineProps<{ menuList: Menu.MenuOptions[] }>()
 
-const router = useRouter();
+const router = useRouter()
 const handleClickMenu = (subItem: Menu.MenuOptions) => {
-  if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");
-  router.push(subItem.path);
-};
+  if (subItem.meta.isLink) return window.open(subItem.meta.isLink, '_blank')
+  console.log(subItem.path)
+  router.push(subItem.path)
+}
 </script>
 
 <style lang="scss">
