@@ -31,7 +31,6 @@ export const initDynamicRouter = async () => {
       userStore.setToken('')
       router.replace(LOGIN_URL)
     }
-    console.log(authStore.flatMenuListGet)
     // 3.添加动态路由
     authStore.flatMenuListGet.forEach(item => {
       item.children && delete item.children
@@ -44,7 +43,6 @@ export const initDynamicRouter = async () => {
         router.addRoute('layout', item as unknown as RouteRecordRaw)
       }
     })
-    console.log(router.getRoutes())
   } catch (error) {
     // 当按钮 || 菜单请求出错时，重定向到登陆页
     userStore.setToken('')

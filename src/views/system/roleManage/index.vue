@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="角色ID" prop="roleName">
+      <el-form-item label="角色名称" prop="roleName">
         <el-input
           v-model="queryParams.roleName"
           placeholder="请输入角色名称"
@@ -50,7 +50,7 @@
     <!-- 表格数据 -->
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色编号" prop="roleId" width="120" />
+      <el-table-column label="角色ID" prop="roleId" width="120" />
       <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
 <!--      <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />-->
       <el-table-column label="显示顺序" prop="roleSort" width="100" />
@@ -94,10 +94,8 @@
       v-model:page="queryParams.currentPage"
       v-model:limit="queryParams.pageSize"
       @pagination="getList" />
-
-    <el-dialog :title="title" v-model="editVisible" width="500px" append-to-body
-               class="max-w-600px">
-      <div class="w-full max-h-60vh overflow-auto">
+    <el-drawer :title="title" v-model="editVisible" :destroy-on-close="true" size="600px">
+      <div class="w-full overflow-auto">
         <el-form ref="roleRef" :model="form" :rules="rules" label-width="100px">
           <el-form-item label="角色名称" prop="roleName">
             <el-input v-model="form.roleName" placeholder="请输入角色名称" />
@@ -140,14 +138,13 @@
           <!--          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>-->
           <!--        </el-form-item>-->
         </el-form>
-      </div>
-      <template #footer>
-        <div class="dialog-footer">
+        <div class="flex justify-center">
           <el-button type="primary" @click="submitForm">确 定</el-button>
           <el-button @click="editVisible=false">取 消</el-button>
         </div>
-      </template>
-    </el-dialog>
+      </div>
+
+    </el-drawer>
 
   </div>
 </template>
@@ -181,7 +178,7 @@ const handleAdd = async () => {
 }
 
 const form = ref<any>({})
-const menuRef = ref(null)
+const menuRef = ref<any>(null)
 const menuExpand = ref(false)
 const menuNodeAll = ref(false)
 const menuCheckStrictly = ref(true)
@@ -314,20 +311,26 @@ const queryParams = reactive({
 const roleList = ref([])
 const getList = async () => {
   loading.value = true
-  const { result } = await getRoleList({ vo: queryParams })
+  const { result } = await getRoleList(queryParams)
   loading.value = false
   roleList.value = result.list
   total.value = result.page.totalRows
 }
 const handleQuery = () => {
   queryParams.currentPage = 1
-  if (dateRange.value.length === 2) [queryParams.startTime, queryParams.endTime] = dateRange.value
+  queryParams.startTime = undefined
+  queryParams.endTime = undefined
+  if (dateRange.value && dateRange.value.length === 2) [queryParams.startTime, queryParams.endTime] = dateRange.value
   getList()
 }
 const queryRef = ref()
 const resetQuery = () => {
   dateRange.value = []
+  queryParams.startTime = undefined
+  queryParams.endTime = undefined
   queryRef.value.resetFields()
+  queryParams.currentPage = 1
+  getList()
 }
 
 getList()

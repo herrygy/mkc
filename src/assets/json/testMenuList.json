@@ -93,10 +93,10 @@
             "children": [
               {
                 "menuId": 1003,
-                "path": "/system/userManage/user-list",
-                "component": "/system/userManage/userList",
+                "path": "/system/userManage",
+                "component": "/system/userManage/index",
                 "parentId": 100,
-                "menuName": "用户管理列表",
+                "menuName": "用户管理",
                 "perms": "",
                 "funcPerms": "sysUser_page",
                 "icon": "Menu",
@@ -108,7 +108,8 @@
                 "children": null,
                 "createTime": "2022-05-20 09:00:00",
                 "remark": null
-              },              {
+              },
+              {
                 "menuId": 1004,
                 "path": "/system/roleManage",
                 "component": "/system/roleManage/index",
@@ -125,8 +126,62 @@
                 "children": null,
                 "createTime": "2022-05-20 09:00:00",
                 "remark": null
+              },
+              {
+                "menuId": 1005,
+                "path": "/system/userManage/proxy",
+                "component": "/system/userManage/proxy",
+                "parentId": 100,
+                "menuName": "代理管理",
+                "perms": "",
+                "funcPerms": "",
+                "icon": "Menu",
+                "type": 2,
+                "status": 0,
+                "isShow": 1,
+                "isOutChain": 0,
+                "sort": 1,
+                "children": null,
+                "createTime": "2022-05-20 09:00:00",
+                "remark": null
               }
             ],
+            "createTime": "2022-05-20 09:00:00",
+            "remark": null
+          },
+          {
+            "menuId": 123,
+            "path": "/system/channelManage",
+            "component": "/system/channelManage/index",
+            "parentId": 1,
+            "menuName": "渠道管理",
+            "perms": "",
+            "funcPerms": "sysUser_page",
+            "icon": "Menu",
+            "type": 2,
+            "status": 0,
+            "isShow": 1,
+            "isOutChain": 0,
+            "sort": 1,
+            "children": null,
+            "createTime": "2022-05-20 09:00:00",
+            "remark": null
+          },
+          {
+            "menuId": 1234,
+            "path": "/system/menuManage",
+            "component": "/system/menuManage/index",
+            "parentId": 1,
+            "menuName": "菜单管理",
+            "perms": "",
+            "funcPerms": "sysUser_page",
+            "icon": "Menu",
+            "type": 2,
+            "status": 0,
+            "isShow": 1,
+            "isOutChain": 0,
+            "sort": 1,
+            "children": null,
             "createTime": "2022-05-20 09:00:00",
             "remark": null
           }

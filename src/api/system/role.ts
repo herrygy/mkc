@@ -5,7 +5,7 @@ export const roleStatus = [
   { value: 1, label: '停用' }
 ]
 
-export function getAllRole (data) {
+export function getAllRole (data = {}) {
   return request({
     url: '/pay-management/sysRole/getAllRole',
     method: 'post',
@@ -45,7 +45,6 @@ export function addRole (data) {
   })
 }
 
-// 400
 export function deleteRole (data) {
   return request({
     url: '/pay-management/sysRole/delete',

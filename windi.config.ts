@@ -7,7 +7,8 @@ export default defineConfig({
       colors: {
         black: '#000',
         white: colors.white,
-        primary: '#3C6AFF'
+        primary: '#3C6AFF',
+        primaryBg: '#f2f3f5'
       },
       backgroundImage: theme => ({
       }),

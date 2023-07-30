@@ -7,9 +7,9 @@
         <span class="logo-text">{{ title }}</span>
       </div>
       <el-menu mode="horizontal" :default-active="activeMenu" :router="false" :unique-opened="true">
-        <!-- 不能直接使用 SubMenu 组件，无法触发 el-menu 隐藏省略功能 -->
+        <!-- 不能直接使用 SubMenu 组件，无法触发 el-menuManage 隐藏省略功能 -->
         <div v-for="subItem in menuList" :key="subItem.path">
-          <el-sub-menu v-if="subItem.children?.length" :key="subItem.path" :index="subItem.path + 'el-sub-menu'">
+          <el-sub-menu v-if="subItem.children?.length" :key="subItem.path" :index="subItem.path + 'el-sub-menuManage'">
             <template #title>
               <el-icon>
                 <component :is="subItem.meta.icon"></component>
@@ -18,7 +18,7 @@
             </template>
             <SubMenu :menu-list="subItem.children" />
           </el-sub-menu>
-          <el-menu-item v-else :key="subItem.path + 'el-menu-item'" :index="subItem.path" @click="handleClickMenu(subItem)">
+          <el-menu-item v-else :key="subItem.path + 'el-menuManage-item'" :index="subItem.path" @click="handleClickMenu(subItem)">
             <el-icon>
               <component :is="subItem.meta.icon"></component>
             </el-icon>

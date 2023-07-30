@@ -78,18 +78,18 @@
       <span>主题颜色</span>
       <el-color-picker v-model="primary" :predefine="colorList" @change="changePrimary" />
     </div>
-    <div class="theme-item">
-      <span>暗黑模式</span>
-      <SwitchDark />
-    </div>
-    <div class="theme-item">
-      <span>灰色模式</span>
-      <el-switch v-model="isGrey" @change="changeGreyOrWeak('grey', !!$event)" />
-    </div>
-    <div class="theme-item mb40">
-      <span>色弱模式</span>
-      <el-switch v-model="isWeak" @change="changeGreyOrWeak('weak', !!$event)" />
-    </div>
+<!--    <div class="theme-item">-->
+<!--      <span>暗黑模式</span>-->
+<!--      <SwitchDark />-->
+<!--    </div>-->
+<!--    <div class="theme-item">-->
+<!--      <span>灰色模式</span>-->
+<!--      <el-switch v-model="isGrey" @change="changeGreyOrWeak('grey', !!$event)" />-->
+<!--    </div>-->
+<!--    <div class="theme-item mb40">-->
+<!--      <span>色弱模式</span>-->
+<!--      <el-switch v-model="isWeak" @change="changeGreyOrWeak('weak', !!$event)" />-->
+<!--    </div>-->
 
     <!-- 界面设置 -->
     <el-divider class="divider" content-position="center">

@@ -12,11 +12,6 @@ export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   noLoading?: boolean;
 }
 
-const config = {
-  timeout: ResultEnum.TIMEOUT as number,
-  withCredentials: true
-}
-
 const service = axios.create({
   timeout: ResultEnum.TIMEOUT as number,
   withCredentials: true
