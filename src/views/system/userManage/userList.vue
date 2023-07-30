@@ -44,7 +44,7 @@
 
 <script setup>
 import { reactive, ref, toRefs } from 'vue'
-import { roleStatus, listRole } from '@/api/system/role.js'
+import { roleStatus, listRole } from '@/api/system/role.ts'
 
 const showSearch = ref(true)
 const loading = ref(false)

@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv, ConfigEnv, UserConfig } from 'vite'
-import { resolve } from 'path'
+import path, { resolve } from 'path'
 import { wrapperEnv } from './build/getEnv'
 import { createVitePlugins } from './build/plugins'
 import pkg from './package.json'

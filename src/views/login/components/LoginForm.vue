@@ -75,6 +75,7 @@ const login = (formEl: FormInstance | undefined) => {
       const { result } = await loginApi({ ...loginForm, password: md5(loginForm.password) })
       console.log(result)
       userStore.setToken(result.token)
+      userStore.setUserInfo({ name: result.userName, userId: result.userId })
       authStore.setMenuList(result.menuList)
       // 2.添加动态路由
       await initDynamicRouter()
