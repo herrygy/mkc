@@ -34,7 +34,7 @@
       <el-button v-auth="['system:role:add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
       <el-button v-auth="['system:role:edit']" type="primary" :icon="EditPen" plain
                  :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
-      <el-button v-auth="['system:role:edit']" type="primary" :icon="Delete" plain
+      <el-button v-auth="['system:role:delete']" type="primary" :icon="Delete" plain
                  :disabled="ids.length===0" @click="handleDelete">删除</el-button>
 <!--      <el-button v-auth="['system:role:edit']" type="primary" :icon="Download" plain @click="handleExport">导出用户数据</el-button>-->
     </div>

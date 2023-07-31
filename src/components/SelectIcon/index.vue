@@ -16,10 +16,12 @@
     <el-dialog v-model="dialogVisible" :title="placeholder" top="50px" width="66%">
       <el-input v-model="inputValue" placeholder="搜索图标" size="large" :prefix-icon="Icons.Search" />
       <el-scrollbar v-if="Object.keys(iconsList).length">
-        <div class="icon-list">
-          <div v-for="item in iconsList" :key="item" class="icon-item" @click="selectIcon(item)">
-            <component :is="item"></component>
-            <span>{{ item.name }}</span>
+        <div class="icon-list gap-20px">
+          <div v-for="item in iconsList" :key="item"
+               class="flex flex-col items-center cursor-pointer"
+               @click="selectIcon(item)">
+            <component :is="item" class="w-20px h-20px"></component>
+            <span class="text-12px">{{ item.name }}</span>
           </div>
         </div>
       </el-scrollbar>
