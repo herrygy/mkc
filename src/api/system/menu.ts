@@ -19,3 +19,19 @@ export function deleteMenu (data) {
     data: data
   })
 }
+
+export function addMenu (data) {
+  return request({
+    url: '/pay-management/sysMenu/add',
+    method: 'post',
+    data: data
+  })
+}
+
+export function updateMenu (data) {
+  return request({
+    url: '/pay-management/sysMenu/edit',
+    method: 'post',
+    data: data
+  })
+}

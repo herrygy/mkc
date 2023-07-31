@@ -13,6 +13,7 @@ export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 const service = axios.create({
+  baseURL: import.meta.env.VITE_USER_NODE_ENV === 'production' ? 'http://47.108.163.219:10070' : '',
   timeout: ResultEnum.TIMEOUT as number,
   withCredentials: true
 })
