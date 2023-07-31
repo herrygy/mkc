@@ -245,7 +245,7 @@ const addDefaultValue = ref({
 const handleAdd = async (rowData) => {
   isEdit.value = false
   reset()
-  form.value = addDefaultValue.value
+  form.value = { parentId: rowData.menuId, ...addDefaultValue.value }
   editModalVisible.value = true
   title.value = '新增菜单'
 }
