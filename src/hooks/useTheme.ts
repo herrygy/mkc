@@ -41,7 +41,7 @@ export const useTheme = () => {
       const primaryColor = isDark.value ? `${getDarkColor(val, i / 10)}` : `${getLightColor(val, i / 10)}`
       document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, primaryColor)
     }
-    globalStore.setGlobalState('primary', val)
+    globalStore.setGlobalState(['primary', val])
   }
 
   // 灰色和弱色切换
@@ -53,8 +53,7 @@ export const useTheme = () => {
       weak: 'filter: invert(80%)'
     }
     body.setAttribute('style', styles[type])
-    const propName = type === 'grey' ? 'isWeak' : 'isGrey'
-    globalStore.setGlobalState(propName, false)
+    globalStore.setGlobalState(type === 'grey' ? ['isWeak', false] : ['isGrey', false])
   }
 
   // 设置菜单样式

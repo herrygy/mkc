@@ -35,3 +35,11 @@ export function updateMenu (data) {
     data: data
   })
 }
+
+export function getUserMenuList (data) {
+  return request({
+    url: '/pay-management/sysMenu/getMenuListByUserId',
+    method: 'post',
+    data: data
+  })
+}

@@ -73,7 +73,6 @@ const login = (formEl: FormInstance | undefined) => {
     try {
       // 1.执行登录接口
       const { result } = await loginApi({ ...loginForm, password: md5(loginForm.password) })
-      console.log(result)
       userStore.setToken(result.token)
       userStore.setUserInfo({ name: result.userName, userId: result.userId })
       authStore.setMenuList(result.menuList)

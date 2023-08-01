@@ -9,11 +9,11 @@ export const staticRouter: RouteRecordRaw[] = [
     path: '/',
     redirect: HOME_URL
   },
-  {
-    path: HOME_URL,
-    name: 'home',
-    component: () => import('@/views/home/index.vue')
-  },
+  // {
+  //   path: HOME_URL,
+  //   name: 'home',
+  //   component: () => import('@/views/home/index.vue')
+  // },
   {
     path: LOGIN_URL,
     name: 'login',

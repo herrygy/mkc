@@ -127,7 +127,8 @@ export function formatMenu (menuList, parentNode) {
           isKeepAlive: true,
           isHide: menuList[i].isShow !== 1,
           sort: menuList[i].sort,
-          menuId: menuList[i].menuId
+          menuId: menuList[i].menuId,
+          type: menuList[i].type || 2
         }
       }
     } else {
@@ -135,9 +136,10 @@ export function formatMenu (menuList, parentNode) {
     }
 
     if (menuList[i].children) {
-      parentNode.children = formatMenu(menuList[i].children, menuList[i])
+      const children = formatMenu(menuList[i].children, menuList[i])
+      parentNode.children = children.length > 0 ? children : null
     }
-    newList.push(parentNode)
+    if (parentNode.meta.type === 1)newList.push(parentNode)
   }
   return newList
 }

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { AuthState } from '@/stores/interface'
 import { getAuthButtonListApi, getAuthMenuListApi } from '@/api/modules/login'
 import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList, formatMenu } from '@/utils'
+import { getUserMenuList } from '@/api/system/menu'
 
 export const useAuthStore = defineStore({
   id: 'geeker-auth',
@@ -12,7 +13,7 @@ export const useAuthStore = defineStore({
     authMenuList: [],
     // 当前页面的 router name，用来做按钮权限筛选
     routeName: '',
-    permissions: ['*:*:*']
+    permissions: []
   }),
   getters: {
     // 按钮权限列表
@@ -30,19 +31,15 @@ export const useAuthStore = defineStore({
     setMenuList (list) {
       this.authMenuList = formatMenu(list, {})
     },
-    // Get AuthButtonList
     async getAuthButtonList () {
-      const { data } = await getAuthButtonListApi()
-      this.authButtonList = data
+
     },
-    // Get AuthMenuList
-    async getAuthMenuList () {
-      const { result } = await getAuthMenuListApi()
-      console.log(result)
-      this.authMenuList = formatMenu(result.menuList, {})
-      console.log(this.authMenuList)
+    async getAuthMenuList (data) {
+      const { result } = await getUserMenuList(data)
+      this.authMenuList = formatMenu(result, {})
+      // const { result } = await getAuthMenuListApi()
+      // this.authMenuList = formatMenu(result.menuList, {})
     },
-    // Set RouteName
     async setRouteName (name: string) {
       this.routeName = name
     }

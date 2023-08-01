@@ -128,7 +128,7 @@
             <el-input v-model="form.funcPerms" placeholder="请输入权限标识" maxlength="100" />
             <template #label>
               <span class="flex items-center">
-                 <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)" placement="top">
+                 <el-tooltip content="控制器中定义的权限字符" placement="top">
                      <el-icon><QuestionFilled /></el-icon>
                  </el-tooltip>
                  权限字符
@@ -213,7 +213,7 @@ const submitForm = () => {
         await updateMenu(form.value)
         ElMessage({ type: 'success', message: '修改成功!' })
       } else {
-        await addMenu({ ...form.value })
+        await addMenu({ ...form.value, parentId: form.value.parentId || -1 })
         ElMessage({ type: 'success', message: '新增成功!' })
       }
       editModalVisible.value = false
@@ -233,7 +233,7 @@ const handleUpdate = (rowData) => {
   isEdit.value = true
   title.value = '编辑菜单'
   editModalVisible.value = true
-  form.value = rowData
+  form.value = { ...rowData }
 }
 const addDefaultValue = ref({
   type: 1,
