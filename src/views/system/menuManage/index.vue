@@ -1,21 +1,17 @@
 <template>
   <div class="table-box">
     <div class="card table-main">
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5">
-          <el-button type="primary" plain icon="Plus"
-                     v-auth="['sysMenu_add']"
-                     @click="handleAdd">新增</el-button>
-          <el-button type="primary" plain :icon="Delete"
-                     v-auth="['sysMenu_delete']"
-                     :disabled="ids.length===0"
-                     @click="handleDelete">删除</el-button>
-        </el-col>
-        <el-col :span="1.5">
-          <el-button type="info" plain icon="Sort"
-                     @click="toggleExpandAll">展开/折叠</el-button>
-        </el-col>
-      </el-row>
+      <div class="flex items-center gap-10px mb-10px">
+        <el-button type="primary" plain icon="Plus"
+                   v-auth="['sysMenu_add']"
+                   @click="handleAdd">新增</el-button>
+        <el-button type="primary" plain :icon="Delete"
+                   v-auth="['sysMenu_delete']"
+                   :disabled="ids.length===0"
+                   @click="handleDelete">删除</el-button>
+        <el-button type="info" plain icon="Sort"
+                   @click="toggleExpandAll">展开/折叠</el-button>
+      </div>
       <el-table v-if="refreshTable" v-loading="loading" :data="menuList"
                 row-key="menuId"
                 :default-expand-all="isExpandAll"

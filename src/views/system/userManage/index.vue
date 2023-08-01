@@ -1,91 +1,96 @@
 <template>
-  <div>
-    <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="用户名称" prop="userName">
-        <el-input
-          v-model="queryParams.userName"
-          placeholder="请输入用户名称"
-          clearable
-          style="width: 240px"
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 240px">
-          <el-option v-for="dict in userStatus" :key="dict.value" :label="dict.label" :value="dict.value" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="创建时间" style="width: 308px">
-        <el-date-picker
-          v-model="dateRange"
-          value-format="YYYY-MM-DD"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <div class="mb-10px">
-      <el-button v-auth="['sysUser_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
-      <el-button v-auth="['sysUser_edit']" type="primary" :icon="EditPen" plain
-                 :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
-      <el-button v-auth="['sysUser_delete']" type="primary" :icon="Delete" plain
-                 :disabled="ids.length===0" @click="handleDelete">删除</el-button>
-<!--      <el-button v-auth="['system:role:edit']" type="primary" :icon="Download" plain @click="handleExport">导出用户数据</el-button>-->
+  <div class="table-box">
+    <div v-show="showSearch" class="card mb-5px">
+      <el-form ref="queryRef"
+               class="c-form-inline"
+               :model="queryParams"
+               :inline="true" label-width="68px">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
+          <el-form-item class="col-span-1" label="用户名称" prop="userName">
+            <el-input v-model="queryParams.userName"
+                      clearable placeholder="请输入用户名称"
+                      @keyup.enter="handleQuery" />
+          </el-form-item>
+          <el-form-item class="col-span-1" label="状态" prop="status">
+            <el-select class="w-full" v-model="queryParams.status"
+                       placeholder="用户状态" clearable>
+              <el-option v-for="dict in userStatus" :key="dict.value"
+                         :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item class="col-span-1" label="创建时间">
+            <el-date-picker class="w-full"
+                            v-model="dateRange"
+                            value-format="YYYY-MM-DD"
+                            type="daterange"
+                            range-separator="-"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"></el-date-picker>
+          </el-form-item>
+          <div class="col-span-1 flex justify-end">
+            <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          </div>
+        </div>
+      </el-form>
     </div>
-    <!-- 表格数据 -->
-    <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="用户ID" prop="userId" width="120" />
-      <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="用户角色" prop="roleList"  width="150" >
-        <template #default="scope">
-          <div v-for="role of scope.row['roleList']" :key="role.roleId">{{role.roleName}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" width="100">
-        <template #default="scope">
-          <el-switch
-            v-model="scope.row.status"
-            :active-value="0"
-            :inactive-value="1"
-            @change="handleStatusChange(scope.row)"
-          ></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="200">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
-        <template #default="scope">
-          <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysUser_edit']"></el-button>
-          </el-tooltip>
-          <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysUser_delete']"></el-button>
-          </el-tooltip>
-          <el-tooltip content="重置密码" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['sysUser_resetPwd']"></el-button>
-          </el-tooltip>
-          <el-tooltip content="分配角色" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['sysUser_distributeRole']"></el-button>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-    </el-table>
-    <Pagination
-      v-show="total > 0"
-      :total="total"
-      v-model:page="queryParams.currentPage"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList" />
+    <div class="card">
+      <div class="mb-10px">
+        <el-button v-auth="['sysUser_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
+        <el-button v-auth="['sysUser_edit']" type="primary" :icon="EditPen" plain
+                   :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
+        <el-button v-auth="['sysUser_delete']" type="primary" :icon="Delete" plain
+                   :disabled="ids.length===0" @click="handleDelete">删除</el-button>
+      </div>
+      <!-- 表格数据 -->
+      <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="用户ID" prop="userId" width="120" />
+        <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" width="150" />
+        <el-table-column label="用户角色" prop="roleList"  width="150" >
+          <template #default="scope">
+            <div v-for="role of scope.row['roleList']" :key="role.roleId">{{role.roleName}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center" width="100">
+          <template #default="scope">
+            <el-switch
+              v-model="scope.row.status"
+              :active-value="0"
+              :inactive-value="1"
+              @change="handleStatusChange(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="200">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
+          <template #default="scope">
+            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysUser_edit']"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysUser_delete']"></el-button>
+            </el-tooltip>
+            <el-tooltip content="重置密码" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['sysUser_resetPwd']"></el-button>
+            </el-tooltip>
+            <el-tooltip content="分配角色" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['sysUser_distributeRole']"></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+      <Pagination
+        v-show="total > 0"
+        :total="total"
+        v-model:page="queryParams.currentPage"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList" />
+    </div>
 
     <!-- 添加或修改用户配置对话框 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
