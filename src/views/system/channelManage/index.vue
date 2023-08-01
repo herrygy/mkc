@@ -31,10 +31,10 @@
       </el-form-item>
     </el-form>
     <div class="mb-10px">
-      <el-button v-auth="['system:role:add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
-      <el-button v-auth="['system:role:edit']" type="primary" :icon="EditPen" plain
+      <el-button v-auth="['channel_addOrUpdate']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
+      <el-button v-auth="['channel_addOrUpdate']" type="primary" :icon="EditPen" plain
                  :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
-      <el-button v-auth="['system:role:edit']" type="primary" :icon="Delete" plain
+      <el-button v-auth="['channel_delete']" type="primary" :icon="Delete" plain
                  :disabled="ids.length===0" @click="handleDelete">删除</el-button>
     </div>
     <!-- 表格数据 -->
@@ -52,10 +52,10 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
         <template #default="scope">
           <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['system:role:edit']"></el-button>
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['channel_addOrUpdate']"></el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['system:role:remove']"></el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['channel_delete']"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>

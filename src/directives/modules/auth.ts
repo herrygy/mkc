@@ -8,12 +8,11 @@ import type { Directive, DirectiveBinding } from 'vue'
 const auth: Directive = {
   mounted (el: HTMLElement, binding: DirectiveBinding) {
     const { value } = binding
-    const allPermission:any = ''
     const permissions = useAuthStore().permissions
     if (value && value instanceof Array && value.length > 0) {
       const permissionFlag = value
       const hasPermissions = permissions.some(permission => {
-        return allPermission === permission || permissionFlag.includes(permission)
+        return permissionFlag.includes(permission)
       })
       if (!hasPermissions) {
         el.parentNode && el.parentNode.removeChild(el)

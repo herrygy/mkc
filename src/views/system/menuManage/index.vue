@@ -4,10 +4,10 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button type="primary" plain icon="Plus"
-                     v-auth="['system:menu:add']"
+                     v-auth="['sysMenu_add']"
                      @click="handleAdd">新增</el-button>
           <el-button type="primary" plain :icon="Delete"
-                     v-auth="['system:role:delete']"
+                     v-auth="['sysMenu_delete']"
                      :disabled="ids.length===0"
                      @click="handleDelete">删除</el-button>
         </el-col>
@@ -47,13 +47,13 @@
         <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
           <template #default="scope">
             <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['system:menu:edit']"></el-button>
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysMenu_edit']"></el-button>
             </el-tooltip>
             <el-tooltip content="新增" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Plus" @click="handleAdd(scope.row)" v-auth="['system:menu:add']"></el-button>
+              <el-button link type="primary" icon="Plus" @click="handleAdd(scope.row)" v-auth="['sysMenu_add']"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['system:menu:remove']"></el-button>
+              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysMenu_delete']"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>

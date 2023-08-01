@@ -40,10 +40,10 @@
       </el-form-item>
     </el-form>
     <div class="mb-10px">
-      <el-button v-auth="['system:role:add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
-      <el-button v-auth="['system:role:edit']" type="primary" :icon="EditPen" plain
+      <el-button v-auth="['sysRole_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
+      <el-button v-auth="['sysRole_edit']" type="primary" :icon="EditPen" plain
                  :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
-      <el-button v-auth="['system:role:edit']" type="primary" :icon="Delete" plain
+      <el-button v-auth="['sysRole_delete']" type="primary" :icon="Delete" plain
                  :disabled="ids.length===0" @click="handleDelete">删除</el-button>
 <!--      <el-button v-auth="['system:role:edit']" type="primary" :icon="Download" plain @click="handleExport">导出用户数据</el-button>-->
     </div>
@@ -74,17 +74,17 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
         <template #default="scope">
           <el-tooltip content="修改" placement="top" :show-after="500">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['system:role:edit']"></el-button>
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysRole_edit']"></el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" :show-after="500">
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['system:role:remove']"></el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysRole_delete']"></el-button>
           </el-tooltip>
-          <el-tooltip content="数据权限" placement="top" :show-after="500">
-            <el-button link type="primary" icon="CircleCheck" @click="handleDataScope(scope.row)" v-auth="['system:role:edit']"></el-button>
-          </el-tooltip>
-          <el-tooltip content="分配用户" placement="top" :show-after="500">
-            <el-button link type="primary" icon="User" @click="handleAuthUser(scope.row)" v-auth="['system:role:edit']"></el-button>
-          </el-tooltip>
+<!--          <el-tooltip content="数据权限" placement="top" :show-after="500">-->
+<!--            <el-button link type="primary" icon="CircleCheck" @click="handleDataScope(scope.row)" v-auth="['system:role:edit']"></el-button>-->
+<!--          </el-tooltip>-->
+<!--          <el-tooltip content="分配用户" placement="top" :show-after="500">-->
+<!--            <el-button link type="primary" icon="User" @click="handleAuthUser(scope.row)" v-auth="['system:role:edit']"></el-button>-->
+<!--          </el-tooltip>-->
         </template>
       </el-table-column>
     </el-table>
