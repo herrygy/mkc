@@ -32,13 +32,9 @@ export const initDynamicRouter = async () => {
       router.replace(LOGIN_URL)
     }
     // 3.添加动态路由
-    const permissions = []
     authStore.flatMenuListGet.forEach(item => {
       item.children && delete item.children
-      if (item.meta && item.meta.type === 2) {
-        return
-      }
-      if (item.meta && item.meta.isHide) return
+      if (item.meta && (item.meta.isHide || item.meta.type === 2)) return
       if (item.component && typeof item.component === 'string') {
         item.component = modules['/src/views' + item.component + '.vue']
       }
@@ -48,6 +44,7 @@ export const initDynamicRouter = async () => {
         router.addRoute('layout', item as unknown as RouteRecordRaw)
       }
     })
+    // authStore.se
   } catch (error) {
     // 当按钮 || 菜单请求出错时，重定向到登陆页
     userStore.setToken('')

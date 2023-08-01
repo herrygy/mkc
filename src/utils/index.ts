@@ -119,16 +119,17 @@ export function formatMenu (menuList, parentNode) {
         name: menuList[i].menuId,
         children: menuList[i].children,
         meta: {
-          icon: menuList[i].icon,
-          title: menuList[i].menuName,
-          isLink: menuList[i].isOutChain === 1,
           isFull: false,
           isAffix: false,
           isKeepAlive: true,
+          icon: menuList[i].icon,
+          title: menuList[i].menuName,
+          isLink: menuList[i].isOutChain === 1,
           isHide: menuList[i].isShow !== 1,
           sort: menuList[i].sort,
           menuId: menuList[i].menuId,
-          type: menuList[i].type || 2
+          type: menuList[i].type,
+          funcPerms: menuList[i].funcPerms
         }
       }
     } else {

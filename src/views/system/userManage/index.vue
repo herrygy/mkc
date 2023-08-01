@@ -31,10 +31,10 @@
       </el-form-item>
     </el-form>
     <div class="mb-10px">
-      <el-button v-auth="['system:role:add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
-      <el-button v-auth="['system:role:edit']" type="primary" :icon="EditPen" plain
+      <el-button v-auth="['sysUser_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
+      <el-button v-auth="['sysUser_edit']" type="primary" :icon="EditPen" plain
                  :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
-      <el-button v-auth="['system:role:delete']" type="primary" :icon="Delete" plain
+      <el-button v-auth="['sysUser_delete']" type="primary" :icon="Delete" plain
                  :disabled="ids.length===0" @click="handleDelete">删除</el-button>
 <!--      <el-button v-auth="['system:role:edit']" type="primary" :icon="Download" plain @click="handleExport">导出用户数据</el-button>-->
     </div>
@@ -66,16 +66,16 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
         <template #default="scope">
           <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['system:role:edit']"></el-button>
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysUser_edit']"></el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['system:role:remove']"></el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysUser_delete']"></el-button>
           </el-tooltip>
           <el-tooltip content="重置密码" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['system:role:edit']"></el-button>
+            <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['sysUser_resetPwd']"></el-button>
           </el-tooltip>
           <el-tooltip content="分配角色" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-            <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['system:role:edit']"></el-button>
+            <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['sysUser_distributeRole']"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>

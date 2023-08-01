@@ -7,12 +7,9 @@ import { getUserMenuList } from '@/api/system/menu'
 export const useAuthStore = defineStore({
   id: 'geeker-auth',
   state: (): AuthState => ({
-    // 按钮权限列表
-    authButtonList: {},
+    originalMenuList: [],
     // 菜单权限列表
     authMenuList: [],
-    // 当前页面的 router name，用来做按钮权限筛选
-    routeName: '',
     permissions: []
   }),
   getters: {
@@ -29,19 +26,26 @@ export const useAuthStore = defineStore({
   },
   actions: {
     setMenuList (list) {
+      this.originalMenuList = list
       this.authMenuList = formatMenu(list, {})
+      this.setPermission()
     },
-    async getAuthButtonList () {
-
+    setPermission () {
+      const menuList = getFlatMenuList(this.originalMenuList)
+      const permissions = []
+      menuList.forEach(item => {
+        item.children && delete item.children
+        if (item.funcPerms) permissions.push(item.funcPerms)
+      })
+      this.permissions = permissions
     },
     async getAuthMenuList (data) {
       const { result } = await getUserMenuList(data)
+      this.originalMenuList = result
       this.authMenuList = formatMenu(result, {})
+      this.setPermission()
       // const { result } = await getAuthMenuListApi()
       // this.authMenuList = formatMenu(result.menuList, {})
-    },
-    async setRouteName (name: string) {
-      this.routeName = name
     }
   }
 })

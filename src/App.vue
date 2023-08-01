@@ -25,7 +25,7 @@ initTheme()
 const i18n = useI18n()
 onMounted(() => {
   const language = globalStore.language ?? getBrowserLang()
-  i18n.locale.value = language
+  i18n.locale.value = 'zh'
   globalStore.setGlobalState(['language', language as LanguageType])
 })
 
