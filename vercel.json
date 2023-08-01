@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/pay-management/(.*)",
-      "destination": "/api/proxy"
-    }
-  ]
-}
