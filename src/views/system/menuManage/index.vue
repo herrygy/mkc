@@ -65,6 +65,7 @@
               value-key="menuId"
               placeholder="选择上级菜单"
               check-strictly
+              clearable
             />
           </el-form-item>
           <el-form-item label="菜单类型" prop="type">
@@ -206,7 +207,7 @@ const submitForm = () => {
   menuFormRef.value.validate(async (valid) => {
     if (valid) {
       if (form.value.menuId) {
-        await updateMenu(form.value)
+        await updateMenu({ ...form.value, parentId: form.value.parentId || -1 })
         ElMessage({ type: 'success', message: '修改成功!' })
       } else {
         await addMenu({ ...form.value, parentId: form.value.parentId || -1 })

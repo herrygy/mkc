@@ -180,13 +180,14 @@ import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import md5 from 'js-md5'
 import AuthRole from './authRole.vue'
+import { useChannelSelect } from '@/composables/useChannelSelect'
 
+const { channelOptions, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
 const title = ref('')
 const form = ref<any>({})
 const roleOptions = ref([])
-const channelOptions = ref([])
 const editModalVisible = ref(false)
 const userRef = ref<any>()
 const ids = ref([])
@@ -208,25 +209,6 @@ const rules = {
   password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
 }
 
-const channelQuery = reactive({
-  currentPage: 1,
-  pageSize: 5
-})
-const channelState = reactive({
-  loading: false,
-  finished: false
-})
-const getChannelOptions = async () => {
-  console.log('====')
-  if (channelState.loading || channelState.finished) return
-  channelState.loading = true
-  const { result, page } = await getChannelList(channelQuery)
-  channelState.loading = false
-  channelOptions.value = result.list
-  channelState.loading = false
-  channelState.finished = true
-}
-
 const handleAdd = async () => {
   isEdit.value = false
   reset()
@@ -241,9 +223,11 @@ const handleUpdate = async (rowData) => {
   isEdit.value = true
   title.value = '编辑用户'
   editModalVisible.value = true
-  const { result } = await getAllRole()
+  const [{ result }] = await Promise.all([
+    getAllRole(),
+    getChannelOptions()
+  ])
   roleOptions.value = result
-  await getChannelOptions()
   const { createTime, roleList, ...newData } = rowData
   form.value = newData
   form.value.roleIds = rowData.roleList.map((item) => {

@@ -17,7 +17,19 @@
                          :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>
-
+          <el-form-item class="col-span-1" label="创建时间">
+            <el-date-picker class="w-full"
+                            v-model="dateRange"
+                            value-format="YYYY-MM-DD"
+                            type="daterange"
+                            range-separator="-"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"></el-date-picker>
+          </el-form-item>
+          <div class="col-span-1 flex justify-end">
+            <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          </div>
         </div>
       </el-form>
     </div>
@@ -54,12 +66,10 @@
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
         </el-table-column>
       </el-table>
-      <Pagination
-        v-show="total > 0"
-        :total="total"
-        v-model:page="queryParams.currentPage"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList" />
+      <Pagination v-show="total > 0" :total="total"
+                  v-model:page="queryParams.currentPage"
+                  v-model:limit="queryParams.pageSize"
+                  @pagination="getList" />
     </div>
 
     <!-- 添加或修改用户配置对话框 -->
@@ -131,11 +141,6 @@
         <el-button @click="editModalVisible=false">取 消</el-button>
       </div>
     </el-drawer>
-    <el-drawer title="分配角色" class="el-bg-color" v-model="authRoleVisible" :destroy-on-close="true" size="450px">
-      <AuthRole :form="form"
-                :selected-role-list="currentAuthRoleList"
-                @update="authRoleVisible=false,getList"></AuthRole>
-    </el-drawer>
   </div>
 </template>
 
@@ -149,6 +154,9 @@ import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import md5 from 'js-md5'
 import AuthRole from './authRole.vue'
+import { useChannelSelect } from '@/composables/useChannelSelect'
+
+const { channelOptions, getChannelOptions } = useChannelSelect()
 
 const showSearch = ref(true)
 const loading = ref(false)
@@ -160,7 +168,6 @@ const editModalVisible = ref(false)
 const userRef = ref()
 const ids = ref([])
 const isEdit = ref(false)
-const isShowSearch = ref(true)
 
 const validateUserName = async (rule: any, value: any, callback: any) => {
   if (value === '') {
@@ -181,14 +188,17 @@ const rules = {
 const handleAdd = async () => {
   reset()
   form.value.status = 0
-  const { result } = await getAllRole()
-  roleOptions.value = result
   editModalVisible.value = true
   title.value = '新增代理'
+  const [{ result }, c] = await Promise.all([
+    getAllRole(),
+    getChannelOptions()
+  ])
+  roleOptions.value = result
 }
 
 const handleUpdate = async (rowData) => {
-  title.value = '编辑用户'
+  title.value = '编辑代理'
   editModalVisible.value = true
   const { result } = await getAllRole()
   roleOptions.value = result
@@ -196,19 +206,6 @@ const handleUpdate = async (rowData) => {
   form.value.roleIds = rowData.roleList.map((item) => {
     return item.roleId
   })
-}
-
-const handleResetPwd = async (rowData) => {
-  ElMessageBox.prompt(`请输入用户【${rowData.userName}】的新密码`, '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    closeOnClickModal: false,
-    inputPattern: /^.{6,16}$/,
-    inputErrorMessage: '用户密码长度6-16位'
-  }).then(async ({ value }) => {
-    await resetPwd({ userId: rowData.userId, password: md5(value) })
-    ElMessage({ type: 'success', message: '修改成功!' })
-  }).catch(() => {})
 }
 
 const reset = () => {
@@ -220,8 +217,7 @@ const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
       if (form.value.userId) {
-        await updateUser(form.value)
-        ElMessage({ type: 'success', message: '修改成功!' })
+        // ElMessage({ type: 'success', message: '修改成功!' })
       } else {
         await addNewProxy({ ...form.value, password: md5(form.value.password) })
         ElMessage({ type: 'success', message: '新增成功!' })
@@ -269,19 +265,6 @@ const handleStatusChange = (rowData) => {
   }).catch(() => {
     rowData.status = rowData.status === 0 ? 1 : 0
   })
-}
-
-const handleDataScope = (data = {}) => {}
-
-const authRoleVisible = ref(false)
-const currentAuthRoleList = ref([])
-const handleAuthRole = (rowData:any) => {
-  authRoleVisible.value = true
-  form.value = { userName: rowData.userName, status: rowData.status, userId: rowData.userId }
-  form.value.roleIds = rowData.roleList.map((item) => {
-    return item.roleId
-  })
-  currentAuthRoleList.value = rowData.roleList
 }
 
 const total = ref(0)
