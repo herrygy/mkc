@@ -35,7 +35,8 @@ import { getStatisticsInfo } from '@/api/system/statistics'
 
 const statisticsInfo = ref({})
 const getInfo = async () => {
-  statisticsInfo.value = await getStatisticsInfo()
+  const { result } = await getStatisticsInfo()
+  statisticsInfo.value = result
 }
 getInfo()
 </script>
