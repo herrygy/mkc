@@ -13,6 +13,7 @@ export default defineConfig({
       backgroundImage: theme => ({
       }),
       boxShadow: theme => ({
+        card: '0 0 12px rgb(0 0 0 / 5%)'
       })
     }
   }
