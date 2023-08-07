@@ -61,7 +61,7 @@
         <el-table-column label="充值渠道" prop="channelType" width="120" />
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
-        <el-table-column label="三方标识" prop="identId" width="120" />
+        <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
         <el-table-column label="App_key" prop="appKey" width="140" />
         <el-table-column label="下单时间戳" prop="oderTime" width="200" >
           <template #default="scope">
