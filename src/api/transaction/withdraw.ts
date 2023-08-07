@@ -21,7 +21,7 @@ export function updateTxInfo (data) {
 // 删除信息
 export function deleteTx (data) {
   return request({
-    url: '/pay-management/withdrawIndentApply/saveOrUpdate',
+    url: '/pay-management/withdrawIndentApply/delete',
     method: 'get',
     params: data
   })

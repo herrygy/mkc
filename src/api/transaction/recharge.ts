@@ -7,6 +7,8 @@ export const rechargeStatus = [
   { value: 'failed', label: '失败' }
 ]
 
+export const rechargeStatusMap = new Map(rechargeStatus.map(item => [item.value, item.label]))
+
 // 查询列表
 export function getOrderList (data) {
   return request({
@@ -37,7 +39,7 @@ export function updateTxInfo (data) {
 // 删除信息
 export function deleteTx (data) {
   return request({
-    url: '/pay-management/rechargeIndent/saveOrUpdate',
+    url: '/pay-management/rechargeIndent/delete',
     method: 'get',
     params: data
   })

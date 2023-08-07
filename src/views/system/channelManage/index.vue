@@ -101,7 +101,7 @@
 import { reactive, ref, toRefs } from 'vue'
 import { getAllRole } from '@/api/system/role'
 import { channelStatus, getChannelList, deleteChannel, addOrUpdateChannel } from '@/api/system/channel'
-import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh } from '@element-plus/icons-vue'
+import { CirclePlus, Delete, EditPen } from '@element-plus/icons-vue'
 import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'

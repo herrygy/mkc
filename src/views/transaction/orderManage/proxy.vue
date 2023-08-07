@@ -35,35 +35,44 @@
     </div>
     <div class="card">
       <el-table v-loading="loading" :data="txList">
-        <el-table-column label="ID" prop="orderNo" width="60" />
-        <el-table-column label="app_key" prop="app_key" width="120" />
-        <el-table-column label="充值订单号" prop="orderNo" width="120" />
+        <el-table-column label="ID" prop="id" width="60" />
+        <el-table-column label="充值订单号" prop="orderNo" width="200" />
         <el-table-column label="实充值金额" prop="rechargeMoney" width="120" />
         <el-table-column label="实际充值金额" prop="actualMoney" width="120" />
         <el-table-column label="货币" prop="currency" width="120" />
         <el-table-column label="充值状态" prop="state" width="120" >
           <template #default="scope">
-            <el-tag v-if="scope.row.processing" type="info">支付中</el-tag>
-            <el-tag v-if="scope.row.success" type="success">成功</el-tag>
-            <el-tag v-if="scope.row.failed" type="danger">失败</el-tag>
+            <el-tag v-if="scope.row.state==='created'" type="info">二维码创建</el-tag>
+            <el-tag v-if="scope.row.state==='processing'" type="info">支付中</el-tag>
+            <el-tag v-if="scope.row.state==='success'" type="success">成功</el-tag>
+            <el-tag v-if="scope.row.state==='danger'" type="danger">失败</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
-            <div>{{scope.row.dealState===0?'待处理':'已处理'}}</div>
+            <div>{{scope.row['dealState']===0?'待处理':'已处理'}}</div>
           </template>
         </el-table-column>
         <el-table-column label="充值渠道" prop="channelType" width="120" />
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
-        <el-table-column label="三方标识" prop="identId" width="120" />
-        <el-table-column label="下单时间戳" prop="oderTime" width="120" />
-        <el-table-column label="成功时间戳" prop="successTime" width="120" />
+        <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
+        <el-table-column label="App_key" prop="appKey" width="140" />
+        <el-table-column label="下单时间戳" prop="oderTime" width="200" >
+          <template #default="scope">
+            {{ parseTime(scope.row['oderTime']) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="成功时间戳" prop="successTime" width="200" >
+          <template #default="scope">
+            {{ parseTime(scope.row['successTime']) }}
+          </template>
+        </el-table-column>
         <el-table-column label="描述信息" prop="description" width="120" />
         <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="逻辑删除" prop="isDeleted" width="120" >
           <template #default="scope">
-            <div>{{scope.row.isDeleted===0?'未删除':'删除'}}</div>
+            <div>{{scope.row['isDeleted']===0?'未删除':'删除'}}</div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -74,10 +83,10 @@
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
             <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysUser_edit']"></el-button>
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['rechargeIndent_saveOrUpdate']"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysUser_delete']"></el-button>
+              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['rechargeIndent_delete']"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -91,28 +100,20 @@
     <!-- 修改提现信息 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
-        <el-form-item label="收款人" prop="accountNumber">
-          <el-input v-model="form['accountNumber']"
-                    placeholder="请输入收款人" maxlength="30" />
+        <el-form-item label="充值金额" prop="rechargeMoney">
+          <el-input-number v-model="form['rechargeMoney']"
+                           :min="0" :step="0.01" :precision="2"
+                           class="flex-1" />
         </el-form-item>
-        <el-form-item label="金额" prop="amount">
-          <el-input-number v-model="form['amount']" :min="0" />
-        </el-form-item>
-        <el-form-item label="App_key" prop="appKey">
-          <el-input v-model="form['appKey']" />
-        </el-form-item>
-        <el-form-item label="Bank Code" prop="bankCode">
-          <el-input v-model="form['bankCode']" />
-        </el-form-item>
-        <el-form-item label="BranchCode" prop="branchCode">
-          <el-input v-model="form['branchCode']" />
+        <el-form-item label="货币" prop="currency">
+          <el-input v-model="form['currency']"/>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form['channelType']" value-key="id"
+          <el-select v-model="form['channelType']" value-key="identifier"
                      placeholder="Select" :teleported="false">
             <el-option v-for="item of channelOptions" :key="item.id"
                        :label="item.name"
-                       :value="item.id" />
+                       :value="item.identifier" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -142,15 +143,23 @@ const userRef = ref()
 const ids = ref([])
 
 const rules = {
-  // userName: [{ required: true, validator: validateUserName, trigger: 'blur' }],
-  // password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+  rechargeMoney: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
+  currency: [{ required: true, message: '货币不能为空', trigger: 'blur' }],
+  channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }]
+}
+
+const handleAdd = async () => {
+  reset()
+  editModalVisible.value = true
+  title.value = '新增订单'
+  await getChannelOptions()
 }
 
 const handleUpdate = async (rowData) => {
-  title.value = '编辑'
+  reset()
+  title.value = '编辑订单'
   editModalVisible.value = true
-  const { createTime, dealState, errMsg, isDeleted, updateTime, ...newData } = rowData
-  form.value = newData
+  form.value = { id: rowData.id, rechargeMoney: rowData.rechargeMoney, currency: rowData.currency, channelType: rowData.channelType }
   await getChannelOptions()
 }
 
@@ -176,7 +185,7 @@ const handleDelete = (rowData:any = {}) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
-    await deleteTx(rowData.id)
+    await deleteTx({ id: rowData.id })
     ElMessage({
       type: 'success',
       message: '删除成功!'
