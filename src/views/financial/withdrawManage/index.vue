@@ -62,9 +62,9 @@
         <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
-            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>
-            </el-tooltip>
+<!--            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
+<!--              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>-->
+<!--            </el-tooltip>-->
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndentApply_delete']"></el-button>
             </el-tooltip>
@@ -77,7 +77,7 @@
                   @pagination="getList" />
     </div>
 
-    <!-- 修改提现信息 -->
+    <!-- 新增提现申请 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
         <el-form-item label="提现类型" prop="amount" v-if="!isEdit">
@@ -157,7 +157,8 @@ const rules = {
   accountNumber: [{ required: true, message: '账号不能为空', trigger: 'blur' }],
   amount: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '银行预留名称不能为空', trigger: 'blur' }],
-  channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }]
+  channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }],
+  pix: [{ required: true, message: 'Pix码不能为空', trigger: 'blur' }]
 }
 
 const handleAdd = async () => {
