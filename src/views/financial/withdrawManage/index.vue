@@ -62,9 +62,9 @@
         <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
-<!--            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
-<!--              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>-->
-<!--            </el-tooltip>-->
+            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>
+            </el-tooltip>
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndentApply_delete']"></el-button>
             </el-tooltip>
@@ -80,6 +80,13 @@
     <!-- 修改提现信息 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
+        <el-form-item label="提现类型" prop="amount" v-if="!isEdit">
+          <el-radio-group v-model="form['type']" class="ml-4">
+            <el-radio :label="1">银行</el-radio>
+            <el-radio :label="2">Pix</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item label="金额" prop="amount">
           <el-input-number v-model="form['amount']"
                            :min="0" :precision="2"
@@ -123,7 +130,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { getWithdrawList, updateTxInfo, deleteTx } from '@/api/order/withdraw'
+import { getWithdrawList, updateTxInfo, deleteTx } from '@/api/financial/withdraw'
 import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -139,6 +146,7 @@ const userRef = ref()
 const isEdit = ref(false)
 
 const rules = {
+  type: [{ required: true, message: '选择提现类型', trigger: 'blur' }],
   accountNumber: [{ required: true, message: '账号不能为空', trigger: 'blur' }],
   amount: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '银行预留名称不能为空', trigger: 'blur' }],
@@ -147,6 +155,7 @@ const rules = {
 
 const handleAdd = async () => {
   reset()
+  isEdit.value = false
   editModalVisible.value = true
   title.value = '新增'
   await getChannelOptions()

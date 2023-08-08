@@ -76,7 +76,7 @@
               <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysUser_delete']"></el-button>
             </el-tooltip>
             <el-tooltip content="重置密码" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['sysUser_resetPwd']"></el-button>
+              <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['sysUser_edit']"></el-button>
             </el-tooltip>
             <el-tooltip content="分配角色" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['sysUser_distributeRole']"></el-button>
@@ -112,16 +112,57 @@
             >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="角色">
-          <el-select v-model="form.roleIds" multiple placeholder="请选择">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.roleId"
-              :label="item.roleName"
-              :value="item.roleId"
-            ></el-option>
+<!--        <el-form-item label="角色">-->
+<!--          <el-select v-model="form.roleIds" multiple placeholder="请选择" disabled>-->
+<!--            <el-option-->
+<!--              v-for="item in roleOptions"-->
+<!--              :key="item.roleId"-->
+<!--              :label="item.roleName"-->
+<!--              :value="item.roleId"-->
+<!--            ></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+        <el-form-item label="渠道类型" prop="channelType">
+          <el-select v-model="form.channelType" value-key="id"
+                     placeholder="Select" :teleported="false">
+            <el-option v-for="item of channelOptions" :key="item.id"
+                       :label="item.name"
+                       :value="item.id" />
           </el-select>
         </el-form-item>
+        <el-form-item label="单笔最大充值" prop="perMaxRecharge">
+          <el-input-number class="flex-1" v-model="form['perMaxRecharge']"
+                           :min="0" :precision="2"/>
+        </el-form-item>
+        <el-form-item label="单笔最小充值" prop="perMinRecharge">
+          <el-input-number class="flex-1" v-model="form['perMinRecharge']"
+                           :min="0" :precision="2"/>
+        </el-form-item>
+        <el-form-item label="每笔充值手续费" prop="perRechargeFee">
+          <el-input-number class="flex-1" v-model="form['perRechargeFee']"
+                           :min="0" :precision="2"/>
+        </el-form-item>
+        <el-form-item label="每笔充值千分比" prop="perRechargeFeeRate">
+          <el-input-number class="flex-1" v-model="form['perRechargeFeeRate']"
+                           :min="0" :precision="0" :step="1" />
+        </el-form-item>
+        <el-form-item label="单笔最大提现" prop="perMaxWithdraw">
+          <el-input-number class="flex-1" v-model="form['perMaxWithdraw']"
+                           :min="0" :precision="2"/>
+        </el-form-item>
+        <el-form-item label="单笔最小提现" prop="perMinWithdraw">
+          <el-input-number class="flex-1" v-model="form['perMinWithdraw']"
+                           :min="0" :precision="2"/>
+        </el-form-item>
+        <el-form-item label="每笔提现手续费" prop="perWithdrawFee">
+          <el-input-number class="flex-1" v-model="form['perWithdrawFee']"
+                           :min="0" :precision="2"/>
+        </el-form-item>
+        <el-form-item label="每笔提现千分比" prop="perWithdrawFeeRate">
+          <el-input-number class="flex-1" v-model="form['perWithdrawFeeRate']"
+                           :min="0" :precision="0" :step="1"/>
+        </el-form-item>
+
       </el-form>
       <div class="flex justify-center">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -139,7 +180,7 @@
 <script setup lang="ts">
 import { reactive, ref, toRefs } from 'vue'
 import { getAllRole } from '@/api/system/role'
-import { userStatus, getUserList, addUser, updateUser, checkUserName, deleteUser, resetPwd } from '@/api/system/user'
+import { userStatus, getUserList, addUser, updateUser, checkUserName, deleteUser, getProxyInfo } from '@/api/system/user'
 import { getChannelList } from '@/api/system/channel'
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh } from '@element-plus/icons-vue'
 import { parseTime } from '@/utils/tool.ts'
@@ -192,7 +233,8 @@ const handleUpdate = async (rowData) => {
   editModalVisible.value = true
   const [{ result }] = await Promise.all([
     getAllRole(),
-    getChannelOptions()
+    getChannelOptions(),
+    getProxyInfo({ id: rowData.userId })
   ])
   roleOptions.value = result
   const { createTime, roleList, ...newData } = rowData

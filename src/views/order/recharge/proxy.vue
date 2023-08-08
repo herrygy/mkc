@@ -45,7 +45,7 @@
             <el-tag v-if="scope.row.state==='created'" type="info">二维码创建</el-tag>
             <el-tag v-if="scope.row.state==='processing'" type="info">支付中</el-tag>
             <el-tag v-if="scope.row.state==='success'" type="success">成功</el-tag>
-            <el-tag v-if="scope.row.state==='danger'" type="danger">失败</el-tag>
+            <el-tag v-if="scope.row.state==='failed'" type="danger">失败</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="处理状态" prop="dealState" width="120" >
@@ -97,23 +97,31 @@
                   @pagination="getList" />
     </div>
 
-    <!-- 修改提现信息 -->
-    <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
+    <!-- 修改订单信息 -->
+    <el-drawer title="编辑订单" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
-        <el-form-item label="充值金额" prop="rechargeMoney">
-          <el-input-number v-model="form['rechargeMoney']"
-                           :min="0" :step="0.01" :precision="2"
-                           class="flex-1" />
+        <el-form-item label="充值订单号" prop="orderNo">
+          <el-input v-model="form['orderNo']" disabled/>
         </el-form-item>
-        <el-form-item label="货币" prop="currency">
-          <el-input v-model="form['currency']"/>
+        <el-form-item label="充值金额" prop="orderNo">
+          <el-input v-model="form['rechargeMoney']" disabled>
+            <template #append>{{form['currency']}}</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
           <el-select v-model="form['channelType']" value-key="identifier"
-                     placeholder="Select" :teleported="false">
+                     placeholder="Select" :teleported="false" disabled>
             <el-option v-for="item of channelOptions" :key="item.id"
                        :label="item.name"
                        :value="item.identifier" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="充值状态" prop="channelType">
+          <el-select v-model="form['state']"
+                     placeholder="Select" :teleported="false">
+            <el-option v-for="item of rechargeStatus" :key="item.value"
+                       :label="item.label"
+                       :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -136,8 +144,8 @@ import { useChannelSelect } from '@/composables/useChannelSelect'
 const { channelOptions, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
-const title = ref('')
 const form = ref<any>({})
+const addModalVisible = ref(false)
 const editModalVisible = ref(false)
 const userRef = ref()
 const ids = ref([])
@@ -150,16 +158,16 @@ const rules = {
 
 const handleAdd = async () => {
   reset()
-  editModalVisible.value = true
-  title.value = '新增订单'
+  addModalVisible.value = true
+  form.value.currency = 'BRL'
+  form.value.state = 'created'
   await getChannelOptions()
 }
 
 const handleUpdate = async (rowData) => {
   reset()
-  title.value = '编辑订单'
   editModalVisible.value = true
-  form.value = { id: rowData.id, rechargeMoney: rowData.rechargeMoney, currency: rowData.currency, channelType: rowData.channelType }
+  form.value = { ...rowData }
   await getChannelOptions()
 }
 

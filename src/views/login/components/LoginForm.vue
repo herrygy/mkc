@@ -75,7 +75,18 @@ const login = (formEl: FormInstance | undefined) => {
       const { result } = await loginApi({ ...loginForm, password: md5(loginForm.password) })
       userStore.setToken(result.token)
       userStore.setUserInfo({ name: result.userName, userId: result.userId })
-      authStore.setMenuList(result.menuList)
+      if (result.menuList && result.menuList.length > 0) {
+        authStore.setMenuList(result.menuList || [])
+      } else {
+        ElNotification({
+          title: '无权限访问',
+          message: '当前账号无任何菜单权限，请联系系统管理员！',
+          type: 'warning',
+          duration: 3000
+        })
+        return
+      }
+
       // 2.添加动态路由
       await initDynamicRouter()
 

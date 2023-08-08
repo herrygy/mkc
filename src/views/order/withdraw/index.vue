@@ -65,9 +65,6 @@
         <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
-            <!--            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
-            <!--              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>-->
-            <!--            </el-tooltip>-->
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndentApply_delete']"></el-button>
             </el-tooltip>

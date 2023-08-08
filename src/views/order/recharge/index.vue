@@ -50,12 +50,13 @@
             <el-tag v-if="scope.row.state==='created'" type="info">二维码创建</el-tag>
             <el-tag v-if="scope.row.state==='processing'" type="info">支付中</el-tag>
             <el-tag v-if="scope.row.state==='success'" type="success">成功</el-tag>
-            <el-tag v-if="scope.row.state==='danger'" type="danger">失败</el-tag>
+            <el-tag v-if="scope.row.state==='failed'" type="danger">失败</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
-            <div>{{scope.row['dealState']===0?'待处理':'已处理'}}</div>
+            <el-tag v-if="scope.row['dealState']===0" type="warning">待处理</el-tag>
+            <el-tag v-else type="info">已处理</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="充值渠道" prop="channelType" width="120" />
@@ -102,8 +103,8 @@
                   @pagination="getList" />
     </div>
 
-    <!-- 新增、修改订单信息 -->
-    <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
+    <!-- 新增订单信息 -->
+    <el-drawer title="新增订单" v-model="addModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
         <el-form-item label="充值金额" prop="rechargeMoney">
           <el-input-number v-model="form['rechargeMoney']"
@@ -111,7 +112,10 @@
                            class="flex-1" />
         </el-form-item>
         <el-form-item label="货币" prop="currency">
-          <el-input v-model="form['currency']"/>
+          <el-select v-model="form['currency']"
+                     placeholder="Select" :teleported="false">
+            <el-option label="BRL" :value="'BRL'" />
+          </el-select>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
           <el-select v-model="form['channelType']" value-key="identifier"
@@ -121,12 +125,58 @@
                        :value="item.identifier" />
           </el-select>
         </el-form-item>
+        <el-form-item label="充值状态" prop="channelType">
+          <el-select v-model="form['state']"
+                     placeholder="Select" :teleported="false" disabled>
+            <el-option v-for="item of rechargeStatus" :key="item.value"
+                       :label="item.label"
+                       :value="item.value" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <div class="flex justify-center">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="editModalVisible=false">取 消</el-button>
       </div>
     </el-drawer>
+    <!-- 修改订单信息 -->
+    <el-drawer title="编辑订单" v-model="editModalVisible" :destroy-on-close="true" size="450px">
+      <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
+        <el-form-item label="充值订单号" prop="orderNo">
+          <el-input v-model="form['orderNo']" disabled/>
+        </el-form-item>
+        <el-form-item label="充值金额" prop="orderNo">
+          <el-input v-model="form['rechargeMoney']" disabled>
+            <template #append>{{form['currency']}}</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="渠道类型" prop="channelType">
+          <el-select v-model="form['channelType']" value-key="identifier"
+                     placeholder="Select" :teleported="false" disabled>
+            <el-option v-for="item of channelOptions" :key="item.id"
+                       :label="item.name"
+                       :value="item.identifier" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="充值状态" prop="channelType">
+          <el-select v-model="form['state']"
+                     placeholder="Select" :teleported="false">
+            <el-option v-for="item of rechargeStatus" :key="item.value"
+                       :label="item.label"
+                       :value="item.value" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div class="flex justify-center">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="editModalVisible=false">取 消</el-button>
+      </div>
+    </el-drawer>
+    <el-dialog v-model="qrCodeModalVisible" title="收款二维码" width="350px">
+      <div class="border-1 border-black/10 p-10px w-min flex items-center mx-auto my-20px">
+        <qrcode-vue id="qr-canvas" :value="qrCodeUrl" :size="200" background="transparent"/>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -137,13 +187,16 @@ import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
+import QrcodeVue from 'qrcode.vue'
 
 const { channelOptions, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
-const title = ref('')
 const form = ref<any>({})
+const addModalVisible = ref(false)
 const editModalVisible = ref(false)
+const qrCodeModalVisible = ref(false)
+const qrCodeUrl = ref('http://localhost:8848/#/order/recharge')
 const userRef = ref()
 const ids = ref([])
 
@@ -155,16 +208,16 @@ const rules = {
 
 const handleAdd = async () => {
   reset()
-  editModalVisible.value = true
-  title.value = '新增订单'
+  addModalVisible.value = true
+  form.value.currency = 'BRL'
+  form.value.state = 'created'
   await getChannelOptions()
 }
 
 const handleUpdate = async (rowData) => {
   reset()
-  title.value = '编辑订单'
   editModalVisible.value = true
-  form.value = { id: rowData.id, rechargeMoney: rowData.rechargeMoney, currency: rowData.currency, channelType: rowData.channelType }
+  form.value = { ...rowData }
   await getChannelOptions()
 }
 
@@ -176,8 +229,13 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      await updateTxInfo(form.value)
-      ElMessage({ type: 'success', message: '修改成功!' })
+      if (form.value.id) {
+        await updateTxInfo(form.value)
+        ElMessage({ type: 'success', message: '修改成功!' })
+      } else {
+        const { result } = await updateTxInfo(form.value)
+        ElMessage({ type: 'success', message: '新增成功!' })
+      }
       editModalVisible.value = false
       await getList()
     }

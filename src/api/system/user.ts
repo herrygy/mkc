@@ -112,3 +112,19 @@ export function getProxyList (data) {
     data: data
   })
 }
+
+export function getProxyInfo (data) {
+  return request({
+    url: '/pay-management/sysUser/getProxyInfo',
+    method: 'post',
+    data: data
+  })
+}
+
+export function editProxyInfo (data) {
+  return request({
+    url: '/pay-management/sysUser/editProxyUser',
+    method: 'post',
+    data: data
+  })
+}

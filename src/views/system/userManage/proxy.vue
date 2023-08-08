@@ -7,12 +7,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
           <el-form-item class="col-span-1" label="代理名称" prop="userName">
             <el-input v-model="queryParams.userName"
-                      clearable placeholder="请输入代理商名称"
+                      clearable placeholder="请输入代理用户名称"
                       @keyup.enter="handleQuery" />
           </el-form-item>
           <el-form-item class="col-span-1" label="状态" prop="status">
             <el-select class="w-full" v-model="queryParams.status"
-                       placeholder="代理商状态" clearable>
+                       placeholder="代理用户状态" clearable>
               <el-option v-for="dict in userStatus" :key="dict.value"
                          :label="dict.label" :value="dict.value" />
             </el-select>
@@ -40,8 +40,13 @@
       <!-- 表格数据 -->
       <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
         <!--      <el-table-column type="selection" width="55" align="center" />-->
-        <el-table-column label="代理商ID" prop="userId" width="120" />
-        <el-table-column label="代理商名称" prop="userName" :show-overflow-tooltip="true" width="150" />
+        <el-table-column label="代理用户ID" prop="userId" width="120" />
+        <el-table-column label="代理用户名称" prop="userName" :show-overflow-tooltip="true" width="150" />
+        <el-table-column label="用户角色" prop="roleList"  width="150" >
+          <template #default="scope">
+            <div v-for="role of scope.row['roleList']" :key="role.roleId">{{role.roleName}}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
             <el-switch
@@ -59,6 +64,11 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="160">
+          <template #default="scope">
+            <el-tooltip content="编辑" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['proxy_editProxyUser']"></el-button>
+            </el-tooltip>
+          </template>
         </el-table-column>
       </el-table>
       <Pagination v-show="total > 0" :total="total"
@@ -67,15 +77,15 @@
                   @pagination="getList" />
     </div>
 
-    <!-- 添加或修改代理商配置对话框 -->
+    <!-- 添加或修改代理用户配置对话框 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
-        <el-form-item label="代理商名称" prop="userName">
+        <el-form-item label="代理用户名称" prop="userName">
           <el-input v-model="form.userName"
-                    placeholder="请输入代理商名称" maxlength="30" />
+                    placeholder="请输入代理用户名称" maxlength="30" />
         </el-form-item>
-        <el-form-item v-if="!form.userId" label="代理商密码" prop="password">
-          <el-input v-model="form.password" placeholder="请输入代理商密码"
+        <el-form-item v-if="!form.userId" label="代理用户密码" prop="password">
+          <el-input v-model="form.password" placeholder="请输入代理用户密码"
                     type="password" maxlength="16" show-password />
         </el-form-item>
         <el-form-item label="状态">
@@ -87,8 +97,8 @@
             >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="角色">
-          <el-select v-model="form.roleIds" multiple placeholder="请选择">
+        <el-form-item label="角色" v-if="isEdit">
+          <el-select v-model="form.roleIds" multiple placeholder="请选择" disabled>
             <el-option
               v-for="item in roleOptions"
               :key="item.roleId"
@@ -150,13 +160,11 @@
 <script setup lang="ts">
 import { reactive, ref, toRefs } from 'vue'
 import { getAllRole } from '@/api/system/role'
-import { userStatus, getProxyList, addNewProxy, updateUser, checkUserName, deleteUser, resetPwd } from '@/api/system/user'
-import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh } from '@element-plus/icons-vue'
+import { userStatus, getProxyList, addNewProxy, updateUser, checkUserName, deleteUser, getProxyInfo, editProxyInfo } from '@/api/system/user'
 import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import md5 from 'js-md5'
-import AuthRole from './authRole.vue'
 import { useChannelSelect } from '@/composables/useChannelSelect'
 
 const { channelOptions, getChannelOptions } = useChannelSelect()
@@ -174,7 +182,7 @@ const isEdit = ref(false)
 
 const validateUserName = async (rule: any, value: any, callback: any) => {
   if (value === '') {
-    callback(new Error('代理商名不能为空'))
+    callback(new Error('代理用户名不能为空'))
   } else if (!isEdit.value) {
     const { code, message } = await checkUserName({ userName: value })
     if (code !== 200) callback(new Error(message))
@@ -190,6 +198,7 @@ const rules = {
 
 const handleAdd = async () => {
   reset()
+  isEdit.value = false
   form.value.status = 0
   editModalVisible.value = true
   title.value = '新增代理'
@@ -203,9 +212,10 @@ const handleAdd = async () => {
 const handleUpdate = async (rowData) => {
   title.value = '编辑代理'
   editModalVisible.value = true
-  const { result } = await getAllRole()
-  roleOptions.value = result
-  form.value = { userName: rowData.userName, status: rowData.status, userId: rowData.userId }
+  isEdit.value = true
+  const { result } = await getProxyInfo({ id: rowData.userId })
+  roleOptions.value = rowData.roleList
+  form.value = { ...rowData, ...result }
   form.value.roleIds = rowData.roleList.map((item) => {
     return item.roleId
   })
@@ -219,8 +229,9 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      if (form.value.userId) {
-        // ElMessage({ type: 'success', message: '修改成功!' })
+      if (isEdit.value) {
+        await editProxyInfo({ ...form.value })
+        ElMessage({ type: 'success', message: '修改成功!' })
       } else {
         await addNewProxy({ ...form.value, password: md5(form.value.password) })
         ElMessage({ type: 'success', message: '新增成功!' })
@@ -236,7 +247,7 @@ const handleDelete = (rowData:any = {}) => {
   const deleteIds = userIds.map((item) => {
     return { id: item }
   })
-  ElMessageBox.confirm(`是否删除代理商ID为 ${userIds} 的数据?`, '系统提示', {
+  ElMessageBox.confirm(`是否删除代理用户ID为 ${userIds} 的数据?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -256,7 +267,7 @@ const handleSelectionChange = (selection) => {
 }
 const handleStatusChange = (rowData) => {
   const text = rowData.status === '0' ? '启用' : '停用'
-  ElMessageBox.confirm(`确认要${text}代理商名为【${rowData.userName}】的代理商吗?`, '系统提示', {
+  ElMessageBox.confirm(`确认要${text}代理用户名为【${rowData.userName}】的代理用户吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
