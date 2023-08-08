@@ -5,14 +5,14 @@
                :model="queryParams" :inline="true"
                label-width="68px">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
-          <el-form-item class="col-span-1" label="用户名称" prop="userName">
+          <el-form-item class="col-span-1" label="代理名称" prop="userName">
             <el-input v-model="queryParams.userName"
-                      clearable placeholder="请输入用户名称"
+                      clearable placeholder="请输入代理商名称"
                       @keyup.enter="handleQuery" />
           </el-form-item>
           <el-form-item class="col-span-1" label="状态" prop="status">
             <el-select class="w-full" v-model="queryParams.status"
-                       placeholder="用户状态" clearable>
+                       placeholder="代理商状态" clearable>
               <el-option v-for="dict in userStatus" :key="dict.value"
                          :label="dict.label" :value="dict.value" />
             </el-select>
@@ -35,18 +35,13 @@
     </div>
     <div class="card">
       <div class="mb-10px">
-        <el-button v-auth="['sysUser_addProxy']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
+        <el-button v-auth="['proxy_add']" type="primary" icon="Plus" @click="handleAdd">新增代理</el-button>
       </div>
       <!-- 表格数据 -->
       <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
         <!--      <el-table-column type="selection" width="55" align="center" />-->
-        <el-table-column label="用户ID" prop="userId" width="120" />
-        <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" width="150" />
-        <el-table-column label="用户角色" prop="roleList"  width="150" >
-          <template #default="scope">
-            <div v-for="role of scope.row['roleList']" :key="role.roleId">{{role.roleName}}</div>
-          </template>
-        </el-table-column>
+        <el-table-column label="代理商ID" prop="userId" width="120" />
+        <el-table-column label="代理商名称" prop="userName" :show-overflow-tooltip="true" width="150" />
         <el-table-column label="状态" align="center" width="100">
           <template #default="scope">
             <el-switch
@@ -72,15 +67,15 @@
                   @pagination="getList" />
     </div>
 
-    <!-- 添加或修改用户配置对话框 -->
+    <!-- 添加或修改代理商配置对话框 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
-        <el-form-item label="用户名称" prop="userName">
+        <el-form-item label="代理商名称" prop="userName">
           <el-input v-model="form.userName"
-                    placeholder="请输入用户名称" maxlength="30" />
+                    placeholder="请输入代理商名称" maxlength="30" />
         </el-form-item>
-        <el-form-item v-if="!form.userId" label="用户密码" prop="password">
-          <el-input v-model="form.password" placeholder="请输入用户密码"
+        <el-form-item v-if="!form.userId" label="代理商密码" prop="password">
+          <el-input v-model="form.password" placeholder="请输入代理商密码"
                     type="password" maxlength="16" show-password />
         </el-form-item>
         <el-form-item label="状态">
@@ -111,28 +106,36 @@
           </el-select>
         </el-form-item>
         <el-form-item label="单笔最大充值" prop="perMaxRecharge">
-          <el-input-number class="w-full" v-model="form.perMaxRecharge" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perMaxRecharge']"
+                           :min="0" :precision="2"/>
         </el-form-item>
         <el-form-item label="单笔最小充值" prop="perMinRecharge">
-          <el-input-number v-model="form.perMinRecharge" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perMinRecharge']"
+                           :min="0" :precision="2"/>
         </el-form-item>
         <el-form-item label="每笔充值手续费" prop="perRechargeFee">
-          <el-input-number v-model="form.perRechargeFee" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perRechargeFee']"
+                           :min="0" :precision="2"/>
         </el-form-item>
         <el-form-item label="每笔充值千分比" prop="perRechargeFeeRate">
-          <el-input-number v-model="form.perRechargeFeeRate" :min="0" :step="1"/>
+          <el-input-number class="flex-1" v-model="form['perRechargeFeeRate']"
+                           :min="0" :precision="0" :step="1" />
         </el-form-item>
         <el-form-item label="单笔最大提现" prop="perMaxWithdraw">
-          <el-input-number v-model="form.perMaxWithdraw" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perMaxWithdraw']"
+                           :min="0" :precision="2"/>
         </el-form-item>
         <el-form-item label="单笔最小提现" prop="perMinWithdraw">
-          <el-input-number v-model="form.perMinWithdraw" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perMinWithdraw']"
+                           :min="0" :precision="2"/>
         </el-form-item>
         <el-form-item label="每笔提现手续费" prop="perWithdrawFee">
-          <el-input-number v-model="form.perWithdrawFee" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perWithdrawFee']"
+                           :min="0" :precision="2"/>
         </el-form-item>
         <el-form-item label="每笔提现千分比" prop="perWithdrawFeeRate">
-          <el-input-number v-model="form.perWithdrawFeeRate" :min="0"/>
+          <el-input-number class="flex-1" v-model="form['perWithdrawFeeRate']"
+                           :min="0" :precision="0" :step="1"/>
         </el-form-item>
 
       </el-form>
@@ -171,7 +174,7 @@ const isEdit = ref(false)
 
 const validateUserName = async (rule: any, value: any, callback: any) => {
   if (value === '') {
-    callback(new Error('用户名不能为空'))
+    callback(new Error('代理商名不能为空'))
   } else if (!isEdit.value) {
     const { code, message } = await checkUserName({ userName: value })
     if (code !== 200) callback(new Error(message))
@@ -233,7 +236,7 @@ const handleDelete = (rowData:any = {}) => {
   const deleteIds = userIds.map((item) => {
     return { id: item }
   })
-  ElMessageBox.confirm(`是否删除用户ID为 ${userIds} 的数据?`, '系统提示', {
+  ElMessageBox.confirm(`是否删除代理商ID为 ${userIds} 的数据?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -253,7 +256,7 @@ const handleSelectionChange = (selection) => {
 }
 const handleStatusChange = (rowData) => {
   const text = rowData.status === '0' ? '启用' : '停用'
-  ElMessageBox.confirm(`确认要${text}用户名为【${rowData.userName}】的用户吗?`, '系统提示', {
+  ElMessageBox.confirm(`确认要${text}代理商名为【${rowData.userName}】的代理商吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

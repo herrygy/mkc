@@ -5,12 +5,19 @@
                :model="queryParams" :inline="true"
                label-width="68px">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
-<!--          <el-form-item class="col-span-1" label="订单号" prop="orderNo">-->
-<!--            <el-input v-model="queryParams.orderNo"-->
-<!--                      clearable placeholder="请输入订单号"-->
-<!--                      @keyup.enter="handleQuery" />-->
+          <el-form-item class="col-span-1" label="订单号" prop="orderNo">
+            <el-input v-model="queryParams.orderNo"
+                      clearable placeholder="请输入订单号"
+                      @keyup.enter="handleQuery" />
+          </el-form-item>
+<!--          <el-form-item class="col-span-1" label="提现状态" prop="status">-->
+<!--            <el-select class="w-full" v-model="queryParams.state"-->
+<!--                       placeholder="提现状态" clearable>-->
+<!--              <el-option v-for="dict in rechargeStatus" :key="dict.value"-->
+<!--                         :label="dict.label" :value="dict.value" />-->
+<!--            </el-select>-->
 <!--          </el-form-item>-->
-          <el-form-item class="col-span-1" label="时间">
+          <el-form-item class="col-span-1" label="创建时间">
             <el-date-picker class="w-full"
                             v-model="dateRange"
                             value-format="YYYY-MM-DD"
@@ -27,10 +34,6 @@
       </el-form>
     </div>
     <div class="card">
-      <div class="mb-10px">
-        <el-button v-auth="['withdrawIndentApply_saveOrUpdate']" type="primary" icon="Plus"
-                   @click="handleAdd">提现申请</el-button>
-      </div>
       <el-table v-loading="loading" :data="txList">
         <el-table-column label="ID" prop="id" width="60" />
         <el-table-column label="订单号" prop="orderNo" width="120" />
@@ -62,9 +65,9 @@
         <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
-<!--            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
-<!--              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>-->
-<!--            </el-tooltip>-->
+            <!--            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
+            <!--              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>-->
+            <!--            </el-tooltip>-->
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndentApply_delete']"></el-button>
             </el-tooltip>

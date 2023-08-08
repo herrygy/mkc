@@ -36,7 +36,7 @@
     </div>
     <div class="card">
       <div class="mb-10px">
-        <el-button v-auth="['sysUser_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
+        <el-button v-auth="['sysUser_add']" type="primary" icon="Plus" @click="handleAdd">新增</el-button>
         <el-button v-auth="['sysUser_edit']" type="primary" :icon="EditPen" plain
                    :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
         <el-button v-auth="['sysUser_delete']" type="primary" :icon="Delete" plain
@@ -122,39 +122,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form.channelType" value-key="id"
-                     placeholder="Select" :teleported="false">
-            <el-option v-for="item of channelOptions" :key="item.id"
-                       :label="item.name"
-                       :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="单笔最大充值" prop="perMaxRecharge">
-          <el-input-number class="w-full" v-model="form.perMaxRecharge" :min="0"/>
-        </el-form-item>
-        <el-form-item label="单笔最小充值" prop="perMinRecharge">
-          <el-input-number v-model="form.perMinRecharge" :min="0"/>
-        </el-form-item>
-        <el-form-item label="每笔充值手续费" prop="perRechargeFee">
-          <el-input-number v-model="form.perRechargeFee" :min="0"/>
-        </el-form-item>
-        <el-form-item label="每笔充值千分比" prop="perRechargeFeeRate">
-          <el-input-number v-model="form.perRechargeFeeRate" :min="0" :step="1"/>
-        </el-form-item>
-        <el-form-item label="单笔最大提现" prop="perMaxWithdraw">
-          <el-input-number v-model="form.perMaxWithdraw" :min="0"/>
-        </el-form-item>
-        <el-form-item label="单笔最小提现" prop="perMinWithdraw">
-          <el-input-number v-model="form.perMinWithdraw" :min="0"/>
-        </el-form-item>
-        <el-form-item label="每笔提现手续费" prop="perWithdrawFee">
-          <el-input-number v-model="form.perWithdrawFee" :min="0"/>
-        </el-form-item>
-        <el-form-item label="每笔提现千分比" prop="perWithdrawFeeRate">
-          <el-input-number v-model="form.perWithdrawFeeRate" :min="0"/>
-        </el-form-item>
-
       </el-form>
       <div class="flex justify-center">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -164,7 +131,7 @@
     <el-drawer title="分配角色" class="el-bg-color" v-model="authRoleVisible" :destroy-on-close="true" size="450px">
       <AuthRole :form="form"
                 :selected-role-list="currentAuthRoleList"
-                @update="authRoleVisible=false,getList"></AuthRole>
+                @update="roleUpdate"></AuthRole>
     </el-drawer>
   </div>
 </template>
@@ -243,7 +210,7 @@ const handleResetPwd = async (rowData) => {
     inputPattern: /^.{6,16}$/,
     inputErrorMessage: '用户密码长度6-16位'
   }).then(async ({ value }) => {
-    await resetPwd({ userId: rowData.userId, password: md5(value) })
+    await updateUser({ userId: rowData.userId, status: rowData.status, userName: rowData.userName, password: md5(value) })
     ElMessage({ type: 'success', message: '修改成功!' })
   }).catch(() => {})
 }
@@ -287,7 +254,6 @@ const handleDelete = (rowData:any = {}) => {
     await getList()
   })
 }
-const handleExport = () => {}
 
 const handleSelectionChange = (selection) => {
   ids.value = selection.map(item => item.userId)
@@ -308,8 +274,6 @@ const handleStatusChange = (rowData) => {
   })
 }
 
-const handleDataScope = (data = {}) => {}
-
 const authRoleVisible = ref(false)
 const currentAuthRoleList = ref([])
 const handleAuthRole = (rowData: any) => {
@@ -319,6 +283,11 @@ const handleAuthRole = (rowData: any) => {
     return item.roleId
   })
   currentAuthRoleList.value = rowData.roleList
+}
+
+const roleUpdate = async () => {
+  authRoleVisible.value = false
+  await getList()
 }
 
 const total = ref(0)

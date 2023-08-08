@@ -127,7 +127,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { rechargeStatus, getProxyOrderList, updateTxInfo, deleteTx } from '@/api/transaction/recharge'
+import { rechargeStatus, getProxyOrderList, updateTxInfo, deleteTx } from '@/api/order/recharge'
 import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
