@@ -107,15 +107,22 @@
                        :value="item.identifier" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Bank Code" prop="bankCode">
-          <el-input v-model="form['bankCode']" />
-        </el-form-item>
-        <el-form-item label="Branch Code" prop="branchCode">
-          <el-input v-model="form['branchCode']" />
-        </el-form-item>
-        <el-form-item label="TaxId" prop="taxId">
-          <el-input v-model="form['taxId']" />
-        </el-form-item>
+        <template v-if="form.type===1">
+          <el-form-item label="Bank Code" prop="bankCode">
+            <el-input v-model="form['bankCode']" />
+          </el-form-item>
+          <el-form-item label="Branch Code" prop="branchCode">
+            <el-input v-model="form['branchCode']" />
+          </el-form-item>
+          <el-form-item label="TaxId" prop="taxId">
+            <el-input v-model="form['taxId']" />
+          </el-form-item>
+        </template>
+        <template v-if="form.type===2">
+          <el-form-item label="Pix" prop="taxId">
+            <el-input v-model="form['pix']" />
+          </el-form-item>
+        </template>
         <el-form-item label="描述" prop="description">
           <el-input v-model="form['description']" type="textarea" maxlength="120"/>
         </el-form-item>
@@ -158,6 +165,7 @@ const handleAdd = async () => {
   isEdit.value = false
   editModalVisible.value = true
   title.value = '新增'
+  form.value.type = 1
   await getChannelOptions()
 }
 
@@ -179,7 +187,8 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      await updateTxInfo(form.value)
+      const { type, ...params } = form.value
+      await updateTxInfo(params)
       ElMessage({ type: 'success', message: '修改成功!' })
       editModalVisible.value = false
       await getList()
