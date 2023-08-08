@@ -45,6 +45,7 @@ const onLogout = () => {
     type: 'warning'
   }).then(async () => {
     await logout()
+    localStorage.removeItem('makcpay-global')
     userStore.setToken('')
     router.replace(LOGIN_URL)
     ElMessage.success('退出登录成功！')
