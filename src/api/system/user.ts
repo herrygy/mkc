@@ -87,8 +87,12 @@ export function distributeRole (data) {
 }
 
 // 用户详情
-export function getUserDetail () {
-
+export function getUserDetail (data) {
+  return request({
+    url: '/pay-management/sysUser/getUserDesc',
+    method: 'post',
+    data: data
+  })
 }
 
 // 新增代理
