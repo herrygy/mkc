@@ -78,9 +78,9 @@
             <el-tooltip content="重置密码" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="Refresh" @click="handleResetPwd(scope.row)" v-auth="['sysUser_edit']"></el-button>
             </el-tooltip>
-            <el-tooltip content="分配角色" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['sysUser_distributeRole']"></el-button>
-            </el-tooltip>
+<!--            <el-tooltip content="分配角色" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
+<!--              <el-button link type="primary" icon="User" @click="handleAuthRole(scope.row)" v-auth="['sysUser_distributeRole']"></el-button>-->
+<!--            </el-tooltip>-->
           </template>
         </el-table-column>
       </el-table>
@@ -112,16 +112,16 @@
             >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-<!--        <el-form-item label="角色">-->
-<!--          <el-select v-model="form.roleIds" multiple placeholder="请选择" disabled>-->
-<!--            <el-option-->
-<!--              v-for="item in roleOptions"-->
-<!--              :key="item.roleId"-->
-<!--              :label="item.roleName"-->
-<!--              :value="item.roleId"-->
-<!--            ></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <el-form-item label="角色">
+          <el-select v-model="form.roleIds" multiple placeholder="请选择" disabled>
+            <el-option
+              v-for="item in roleOptions"
+              :key="item.roleId"
+              :label="item.roleName"
+              :value="item.roleId"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
           <el-select v-model="form.channelType" value-key="id"
                      placeholder="Select" :teleported="false">
@@ -221,7 +221,9 @@ const handleAdd = async () => {
   isEdit.value = false
   reset()
   form.value.status = 0
+  form.value.roleIds = [1]
   const { result } = await getAllRole()
+  await getChannelOptions()
   roleOptions.value = result
   editModalVisible.value = true
   title.value = '新增用户'

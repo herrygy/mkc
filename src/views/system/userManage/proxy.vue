@@ -97,7 +97,7 @@
             >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="角色" v-if="isEdit">
+        <el-form-item label="角色">
           <el-select v-model="form.roleIds" multiple placeholder="请选择" disabled>
             <el-option
               v-for="item in roleOptions"
@@ -200,6 +200,7 @@ const handleAdd = async () => {
   reset()
   isEdit.value = false
   form.value.status = 0
+  form.value.roleIds = [2]
   editModalVisible.value = true
   title.value = '新增代理'
   const [{ result }, c] = await Promise.all([

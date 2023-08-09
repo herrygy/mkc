@@ -34,16 +34,16 @@
       </el-form>
     </div>
     <div class="card">
-      <div class="mb-10px">
-        <el-button v-auth="['sysRole_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>
-        <el-button v-auth="['sysRole_edit']" type="primary" :icon="EditPen" plain
-                   :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>
-        <el-button v-auth="['sysRole_delete']" type="primary" :icon="Delete" plain
-                   :disabled="ids.length===0" @click="handleDelete">删除</el-button>
-      </div>
+<!--      <div class="mb-10px">-->
+<!--        <el-button v-auth="['sysRole_add']" type="primary" :icon="CirclePlus" @click="handleAdd">新增</el-button>-->
+<!--        <el-button v-auth="['sysRole_edit']" type="primary" :icon="EditPen" plain-->
+<!--                   :disabled="ids.length!==1" @click="handleUpdate">修改</el-button>-->
+<!--        <el-button v-auth="['sysRole_delete']" type="primary" :icon="Delete" plain-->
+<!--                   :disabled="ids.length===0" @click="handleDelete">删除</el-button>-->
+<!--      </div>-->
       <!-- 表格数据 -->
       <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" />
+<!--        <el-table-column type="selection" width="55" align="center" />-->
         <el-table-column label="角色ID" prop="roleId" width="120" />
         <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
         <el-table-column label="显示顺序" prop="roleSort" width="100" />
@@ -63,9 +63,9 @@
             <el-tooltip content="修改" placement="top" :show-after="500">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['sysRole_edit']"></el-button>
             </el-tooltip>
-            <el-tooltip content="删除" placement="top" :show-after="500">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysRole_delete']"></el-button>
-            </el-tooltip>
+<!--            <el-tooltip content="删除" placement="top" :show-after="500">-->
+<!--              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['sysRole_delete']"></el-button>-->
+<!--            </el-tooltip>-->
           </template>
         </el-table-column>
       </el-table>
