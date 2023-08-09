@@ -108,11 +108,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form.channelType" value-key="id"
+          <el-select v-model="form['channelType']" value-key="identifier"
                      placeholder="Select" :teleported="false">
             <el-option v-for="item of channelOptions" :key="item.id"
                        :label="item.name"
-                       :value="item.id" />
+                       :value="item.identifier" />
           </el-select>
         </el-form-item>
         <el-form-item label="单笔最大充值" prop="perMaxRecharge">
@@ -171,10 +171,12 @@ const { channelOptions, getChannelOptions } = useChannelSelect()
 
 const showSearch = ref(true)
 const loading = ref(false)
-const multiple = ref(false)
 const title = ref('')
 const form = ref<any>({})
-const roleOptions = ref([])
+const roleOptions = ref([
+  { roleId: 1, roleName: '超级管理员', createTime: '2021-12-10 11:31:55' },
+  { roleId: 2, roleName: '代理', createTime: '2023-06-20 15:21:06' }
+])
 const editModalVisible = ref(false)
 const userRef = ref()
 const ids = ref([])
@@ -201,22 +203,23 @@ const handleAdd = async () => {
   isEdit.value = false
   form.value.status = 0
   form.value.roleIds = [2]
+  await getChannelOptions()
   editModalVisible.value = true
   title.value = '新增代理'
-  const [{ result }, c] = await Promise.all([
-    getAllRole(),
-    getChannelOptions()
-  ])
-  roleOptions.value = result
 }
 
 const handleUpdate = async (rowData) => {
+  reset()
+  isEdit.value = true
   title.value = '编辑代理'
   editModalVisible.value = true
-  isEdit.value = true
-  const { result } = await getProxyInfo({ id: rowData.userId })
-  roleOptions.value = rowData.roleList
-  form.value = { ...rowData, ...result }
+  const [{ result }] = await Promise.all([
+    getProxyInfo({ id: rowData.userId }),
+    getChannelOptions()
+  ])
+  form.value = result
+  const { createTime, roleList, ...newData } = rowData
+  form.value = { ...form.value, ...newData }
   form.value.roleIds = rowData.roleList.map((item) => {
     return item.roleId
   })

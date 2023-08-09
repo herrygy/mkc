@@ -122,47 +122,49 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form.channelType" value-key="id"
-                     placeholder="Select" :teleported="false">
-            <el-option v-for="item of channelOptions" :key="item.id"
-                       :label="item.name"
-                       :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="单笔最大充值" prop="perMaxRecharge">
-          <el-input-number class="flex-1" v-model="form['perMaxRecharge']"
-                           :min="0" :precision="2"/>
-        </el-form-item>
-        <el-form-item label="单笔最小充值" prop="perMinRecharge">
-          <el-input-number class="flex-1" v-model="form['perMinRecharge']"
-                           :min="0" :precision="2"/>
-        </el-form-item>
-        <el-form-item label="每笔充值手续费" prop="perRechargeFee">
-          <el-input-number class="flex-1" v-model="form['perRechargeFee']"
-                           :min="0" :precision="2"/>
-        </el-form-item>
-        <el-form-item label="每笔充值千分比" prop="perRechargeFeeRate">
-          <el-input-number class="flex-1" v-model="form['perRechargeFeeRate']"
-                           :min="0" :precision="0" :step="1" />
-        </el-form-item>
-        <el-form-item label="单笔最大提现" prop="perMaxWithdraw">
-          <el-input-number class="flex-1" v-model="form['perMaxWithdraw']"
-                           :min="0" :precision="2"/>
-        </el-form-item>
-        <el-form-item label="单笔最小提现" prop="perMinWithdraw">
-          <el-input-number class="flex-1" v-model="form['perMinWithdraw']"
-                           :min="0" :precision="2"/>
-        </el-form-item>
-        <el-form-item label="每笔提现手续费" prop="perWithdrawFee">
-          <el-input-number class="flex-1" v-model="form['perWithdrawFee']"
-                           :min="0" :precision="2"/>
-        </el-form-item>
-        <el-form-item label="每笔提现千分比" prop="perWithdrawFeeRate">
-          <el-input-number class="flex-1" v-model="form['perWithdrawFeeRate']"
-                           :min="0" :precision="0" :step="1"/>
-        </el-form-item>
+        <template v-if="form['appKey']">
+          <el-form-item label="渠道类型" prop="channelType">
+            <el-select v-model="form['channelType']" value-key="identifier"
+                       placeholder="Select" :teleported="false">
+              <el-option v-for="item of channelOptions" :key="item.id"
+                         :label="item.name"
+                         :value="item.identifier" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="单笔最大充值" prop="perMaxRecharge">
+            <el-input-number class="flex-1" v-model="form['perMaxRecharge']"
+                             :min="0" :precision="2"/>
+          </el-form-item>
+          <el-form-item label="单笔最小充值" prop="perMinRecharge">
+            <el-input-number class="flex-1" v-model="form['perMinRecharge']"
+                             :min="0" :precision="2"/>
+          </el-form-item>
+          <el-form-item label="每笔充值手续费" prop="perRechargeFee">
+            <el-input-number class="flex-1" v-model="form['perRechargeFee']"
+                             :min="0" :precision="2"/>
+          </el-form-item>
+          <el-form-item label="每笔充值千分比" prop="perRechargeFeeRate">
+            <el-input-number class="flex-1" v-model="form['perRechargeFeeRate']"
+                             :min="0" :precision="0" :step="1" />
+          </el-form-item>
+          <el-form-item label="单笔最大提现" prop="perMaxWithdraw">
+            <el-input-number class="flex-1" v-model="form['perMaxWithdraw']"
+                             :min="0" :precision="2"/>
+          </el-form-item>
+          <el-form-item label="单笔最小提现" prop="perMinWithdraw">
+            <el-input-number class="flex-1" v-model="form['perMinWithdraw']"
+                             :min="0" :precision="2"/>
+          </el-form-item>
+          <el-form-item label="每笔提现手续费" prop="perWithdrawFee">
+            <el-input-number class="flex-1" v-model="form['perWithdrawFee']"
+                             :min="0" :precision="2"/>
+          </el-form-item>
+          <el-form-item label="每笔提现千分比" prop="perWithdrawFeeRate">
+            <el-input-number class="flex-1" v-model="form['perWithdrawFeeRate']"
+                             :min="0" :precision="0" :step="1"/>
+          </el-form-item>
 
+        </template>
       </el-form>
       <div class="flex justify-center">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -180,7 +182,16 @@
 <script setup lang="ts">
 import { reactive, ref, toRefs } from 'vue'
 import { getAllRole } from '@/api/system/role'
-import { userStatus, getUserList, addUser, updateUser, checkUserName, deleteUser, getProxyInfo } from '@/api/system/user'
+import {
+  userStatus,
+  getUserList,
+  addUser,
+  updateUser,
+  checkUserName,
+  deleteUser,
+  getProxyInfo,
+  editProxyInfo
+} from '@/api/system/user'
 import { getChannelList } from '@/api/system/channel'
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh } from '@element-plus/icons-vue'
 import { parseTime } from '@/utils/tool.ts'
@@ -195,7 +206,10 @@ const showSearch = ref(true)
 const loading = ref(false)
 const title = ref('')
 const form = ref<any>({})
-const roleOptions = ref([])
+const roleOptions = ref([
+  { roleId: 1, roleName: '超级管理员', createTime: '2021-12-10 11:31:55' },
+  { roleId: 2, roleName: '代理', createTime: '2023-06-20 15:21:06' }
+])
 const editModalVisible = ref(false)
 const userRef = ref<any>()
 const ids = ref([])
@@ -218,29 +232,29 @@ const rules = {
 }
 
 const handleAdd = async () => {
-  isEdit.value = false
   reset()
+  isEdit.value = false
   form.value.status = 0
   form.value.roleIds = [1]
-  const { result } = await getAllRole()
   await getChannelOptions()
-  roleOptions.value = result
   editModalVisible.value = true
   title.value = '新增用户'
 }
 
 const handleUpdate = async (rowData) => {
+  reset()
   isEdit.value = true
   title.value = '编辑用户'
   editModalVisible.value = true
-  const [{ result }] = await Promise.all([
-    getAllRole(),
-    getChannelOptions(),
-    getProxyInfo({ id: rowData.userId })
-  ])
-  roleOptions.value = result
+  await getChannelOptions()
+  if (rowData.appKey) {
+    const { result } = await getProxyInfo({
+      appKey: rowData.appKey
+    })
+    form.value = result
+  }
   const { createTime, roleList, ...newData } = rowData
-  form.value = newData
+  form.value = { ...form.value, ...newData }
   form.value.roleIds = rowData.roleList.map((item) => {
     return item.roleId
   })
@@ -267,7 +281,11 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      if (form.value.userId) {
+      if (form.value.appKey) {
+        const { password, ...params } = form.value
+        await editProxyInfo(params)
+        ElMessage({ type: 'success', message: '修改成功!' })
+      } else if (form.value.userId) {
         await updateUser(form.value)
         ElMessage({ type: 'success', message: '修改成功!' })
       } else {

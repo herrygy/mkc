@@ -174,7 +174,8 @@
     </el-drawer>
     <el-dialog v-model="qrCodeModalVisible" title="收款二维码" width="350px">
       <div class="border-1 border-black/10 p-10px w-min flex items-center mx-auto my-20px">
-        <qrcode-vue id="qr-canvas" :value="qrCodeUrl" :size="200" background="transparent"/>
+<!--        <qrcode-vue id="qr-canvas" :value="qrCodeUrl" :size="200" background="transparent"/>-->
+        <img class="w-200px h-200px min-w-200px min-h-200px" :src="qrCodeUrl" alt="">
       </div>
     </el-dialog>
   </div>
@@ -196,7 +197,7 @@ const form = ref<any>({})
 const addModalVisible = ref(false)
 const editModalVisible = ref(false)
 const qrCodeModalVisible = ref(false)
-const qrCodeUrl = ref('http://localhost:8848/#/order/recharge')
+const qrCodeUrl = ref('')
 const userRef = ref()
 const ids = ref([])
 
@@ -234,6 +235,7 @@ const submitForm = async () => {
         ElMessage({ type: 'success', message: '修改成功!' })
       } else {
         const { result } = await updateTxInfo(form.value)
+        qrCodeUrl.value = result.pictureUrl || ''
         ElMessage({ type: 'success', message: '新增成功!' })
       }
       editModalVisible.value = false
