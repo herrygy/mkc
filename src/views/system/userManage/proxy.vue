@@ -214,7 +214,7 @@ const handleUpdate = async (rowData) => {
   title.value = '编辑代理'
   editModalVisible.value = true
   const [{ result }] = await Promise.all([
-    getProxyInfo({ id: rowData.userId }),
+    getProxyInfo({ appKey: rowData.appKey }),
     getChannelOptions()
   ])
   form.value = result
