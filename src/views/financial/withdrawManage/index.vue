@@ -92,22 +92,22 @@
                            :min="0" :precision="2"
                            class="flex-1"/>
         </el-form-item>
-        <el-form-item label="账户号码" prop="accountNumber">
-          <el-input v-model="form['accountNumber']"
-                    placeholder="请输入账户号码" maxlength="30" />
-        </el-form-item>
-        <el-form-item label="银行预留名" prop="name">
-          <el-input v-model="form['name']" />
-        </el-form-item>
-        <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form['channelType']" value-key="identifier"
-                     placeholder="Select" :teleported="false">
-            <el-option v-for="item of channelOptions" :key="item.id"
-                       :label="item.name"
-                       :value="item.identifier" />
-          </el-select>
-        </el-form-item>
         <template v-if="form.type===1">
+          <el-form-item label="账户号码" prop="accountNumber">
+            <el-input v-model="form['accountNumber']"
+                      placeholder="请输入账户号码" maxlength="30" />
+          </el-form-item>
+          <el-form-item label="银行预留名" prop="name">
+            <el-input v-model="form['name']" />
+          </el-form-item>
+          <el-form-item label="渠道类型" prop="channelType">
+            <el-select v-model="form['channelType']" value-key="identifier"
+                       placeholder="Select" :teleported="false">
+              <el-option v-for="item of channelOptions" :key="item.id"
+                         :label="item.name"
+                         :value="item.identifier" />
+            </el-select>
+          </el-form-item>
           <el-form-item label="Bank Code" prop="bankCode">
             <el-input v-model="form['bankCode']" />
           </el-form-item>
