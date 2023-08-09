@@ -9,10 +9,10 @@ export function getWithdrawList (data) {
   })
 }
 
-// 保存修改提现信息
+// 新增提现申请
 export function updateTxInfo (data) {
   return request({
-    url: '/pay-management/withdrawIndentApply/saveOrUpdate',
+    url: '/pay-management/withdrawIndent/withdrawCash',
     method: 'post',
     data: data
   })

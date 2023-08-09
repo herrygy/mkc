@@ -128,3 +128,19 @@ export function editProxyInfo (data) {
     data: data
   })
 }
+
+export function setProxyBackUrl (data) {
+  return request({
+    url: '/pay-management/sysUser/setProxyBackUrl',
+    method: 'post',
+    data: data
+  })
+}
+
+export function setRechargeBackUrl (data) {
+  return request({
+    url: '/pay-management/sysUser/setRechargeBackUrl',
+    method: 'post',
+    data: data
+  })
+}

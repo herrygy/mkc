@@ -1,6 +1,6 @@
 <template>
-  <div v-for="subItem in menuList" :key="subItem.meta.menuId">
-    <el-sub-menu v-if="subItem.children?.length" :index="subItem.meta.menuId">
+  <div v-for="subItem in menuList" :key="subItem.path">
+    <el-sub-menu v-if="subItem.children?.length" :index="subItem.path">
       <template #title>
         <el-icon>
           <component :is="subItem.meta.icon"></component>
@@ -9,8 +9,8 @@
       </template>
       <SubMenu :menu-list="subItem.children" />
     </el-sub-menu>
-    <el-menu-item v-else :index="subItem.meta.menuId" @click="handleClickMenu(subItem)">
-      <el-icon v-if="subItem.meta.icon">
+    <el-menu-item v-else :index="subItem.path" @click="handleClickMenu(subItem)">
+      <el-icon>
         <component :is="subItem.meta.icon"></component>
       </el-icon>
       <template #title>
@@ -28,7 +28,6 @@ defineProps<{ menuList: Menu.MenuOptions[] }>()
 const router = useRouter()
 const handleClickMenu = (subItem: Menu.MenuOptions) => {
   if (subItem.meta.isLink) return window.open(subItem.meta.isLink, '_blank')
-  console.log(subItem.path)
   router.push(subItem.path)
 }
 </script>

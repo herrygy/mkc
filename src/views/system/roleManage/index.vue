@@ -228,6 +228,7 @@ const submitForm = async () => {
 }
 
 const handleUpdate = async (rowData) => {
+  reset()
   editVisible.value = true
   const { result } = await getRoleInfoById({ id: rowData.roleId })
   menuOptions.value = result.menuList

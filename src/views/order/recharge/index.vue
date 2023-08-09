@@ -231,7 +231,13 @@ const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
       if (form.value.id) {
-        await updateTxInfo(form.value)
+        await updateTxInfo({
+          channelType: form.value.channelType,
+          currency: form.value.currency,
+          id: form.value.id,
+          rechargeMoney: form.value.rechargeMoney,
+          state: form.value.state
+        })
         ElMessage({ type: 'success', message: '修改成功!' })
       } else {
         const { result } = await updateTxInfo(form.value)

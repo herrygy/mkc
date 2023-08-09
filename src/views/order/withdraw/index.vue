@@ -34,6 +34,10 @@
       </el-form>
     </div>
     <div class="card">
+      <div class="mb-10px">
+        <el-button v-auth="['withdrawIndent_withdrawCash']" type="primary" icon="Plus"
+                   @click="handleAdd">提现申请</el-button>
+      </div>
       <el-table v-loading="loading" :data="txList">
         <el-table-column label="ID" prop="id" width="60" />
         <el-table-column label="订单号" prop="orderNo" width="120" />
@@ -65,8 +69,11 @@
         <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
+            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndent_editState']"></el-button>
+            </el-tooltip>
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndentApply_delete']"></el-button>
+              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndent_delete']"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -78,37 +85,84 @@
     </div>
 
     <!-- 修改提现信息 -->
-    <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
+    <el-drawer title="修改" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
-        <el-form-item label="金额" prop="amount">
+        <el-form-item label="订单号" prop="orderNo">
+          <el-input v-model="form['orderNo']" disabled/>
+        </el-form-item>
+        <el-form-item label="提现金额" prop="amount">
           <el-input-number v-model="form['amount']"
                            :min="0" :precision="2"
-                           class="flex-1"/>
-        </el-form-item>
-        <el-form-item label="账户号码" prop="accountNumber">
-          <el-input v-model="form['accountNumber']"
-                    placeholder="请输入账户号码" maxlength="30" />
-        </el-form-item>
-        <el-form-item label="银行预留名" prop="name">
-          <el-input v-model="form['name']" />
+                           class="flex-1" disabled/>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
           <el-select v-model="form['channelType']" value-key="identifier"
-                     placeholder="Select" :teleported="false">
+                     placeholder="Select" :teleported="false" disabled>
             <el-option v-for="item of channelOptions" :key="item.id"
                        :label="item.name"
                        :value="item.identifier" />
           </el-select>
         </el-form-item>
-        <el-form-item label="Bank Code" prop="bankCode">
-          <el-input v-model="form['bankCode']" />
+        <el-form-item label="提现状态" prop="channelType">
+          <el-select v-model="form['state']"
+                     placeholder="Select" :teleported="false">
+            <el-option v-for="item of withdrawStatus" :key="item.value"
+                       :label="item.label"
+                       :value="item.value" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="Branch Code" prop="branchCode">
-          <el-input v-model="form['branchCode']" />
+      </el-form>
+      <div class="flex justify-center">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="editModalVisible=false">取 消</el-button>
+      </div>
+    </el-drawer>
+    <!-- 新增提现申请 -->
+    <el-drawer title="新增提现申请" v-model="addModalVisible" :destroy-on-close="true" size="450px">
+      <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
+        <el-form-item label="提现类型" prop="amount" v-if="!isEdit">
+          <el-radio-group v-model="form['type']" class="ml-4">
+            <el-radio :label="0">银行</el-radio>
+            <el-radio :label="1">Pix</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="TaxId" prop="taxId">
-          <el-input v-model="form['taxId']" />
+
+        <el-form-item label="金额" prop="amount">
+          <el-input-number v-model="form['amount']"
+                           :min="0" :precision="2"
+                           class="flex-1"/>
         </el-form-item>
+        <template v-if="form.type===0">
+          <el-form-item label="账户号码" prop="accountNumber">
+            <el-input v-model="form['accountNumber']"
+                      placeholder="请输入账户号码" maxlength="30" />
+          </el-form-item>
+          <el-form-item label="银行预留名" prop="name">
+            <el-input v-model="form['name']" />
+          </el-form-item>
+          <el-form-item label="渠道类型" prop="channelType">
+            <el-select v-model="form['channelType']" value-key="identifier"
+                       placeholder="Select" :teleported="false">
+              <el-option v-for="item of channelOptions" :key="item.id"
+                         :label="item.name"
+                         :value="item.identifier" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Bank Code" prop="bankCode">
+            <el-input v-model="form['bankCode']" />
+          </el-form-item>
+          <el-form-item label="Branch Code" prop="branchCode">
+            <el-input v-model="form['branchCode']" />
+          </el-form-item>
+          <el-form-item label="TaxId" prop="taxId">
+            <el-input v-model="form['taxId']" />
+          </el-form-item>
+        </template>
+        <template v-if="form.type===1">
+          <el-form-item label="Pix" prop="taxId">
+            <el-input v-model="form['pix']" />
+          </el-form-item>
+        </template>
         <el-form-item label="描述" prop="description">
           <el-input v-model="form['description']" type="textarea" maxlength="120"/>
         </el-form-item>
@@ -123,7 +177,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { getWithdrawList, updateTxInfo, deleteTx } from '@/api/order/withdraw'
+import { withdrawStatus, getWithdrawList, updateTxState, deleteTx, addWithdraw } from '@/api/order/withdraw'
 import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -132,33 +186,32 @@ import { useChannelSelect } from '@/composables/useChannelSelect'
 const { channelOptions, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
-const title = ref('')
 const form = ref<any>({})
 const editModalVisible = ref(false)
+const addModalVisible = ref(false)
 const userRef = ref()
 const isEdit = ref(false)
 
 const rules = {
+  type: [{ required: true, message: '选择提现类型', trigger: 'blur' }],
   accountNumber: [{ required: true, message: '账号不能为空', trigger: 'blur' }],
   amount: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '银行预留名称不能为空', trigger: 'blur' }],
-  channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }]
+  channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }],
+  pix: [{ required: true, message: 'Pix码不能为空', trigger: 'blur' }]
 }
 
 const handleAdd = async () => {
   reset()
-  editModalVisible.value = true
-  title.value = '新增'
+  addModalVisible.value = true
+  form.value.type = 1
   await getChannelOptions()
 }
 
 const handleUpdate = async (rowData) => {
   reset()
-  isEdit.value = true
-  title.value = '编辑'
   editModalVisible.value = true
-  const { createTime, dealState, errMsg, isDeleted, updateTime, ...newData } = rowData
-  form.value = newData
+  form.value = { ...rowData }
   await getChannelOptions()
 }
 
@@ -170,10 +223,21 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      await updateTxInfo(form.value)
-      ElMessage({ type: 'success', message: '修改成功!' })
-      editModalVisible.value = false
-      await getList()
+      if (form.value.id) {
+        await updateTxState({
+          id: form.value.id,
+          state: form.value.state,
+          appKey: form.value.appKey
+        })
+        ElMessage({ type: 'success', message: '修改成功!' })
+        editModalVisible.value = false
+        await getList()
+      } else {
+        await addWithdraw(form.value)
+        ElMessage({ type: 'success', message: '新增成功!' })
+        addModalVisible.value = false
+        await getList()
+      }
     }
   })
 }

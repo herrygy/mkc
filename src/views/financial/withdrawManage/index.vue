@@ -28,7 +28,7 @@
     </div>
     <div class="card">
       <div class="mb-10px">
-        <el-button v-auth="['withdrawIndentApply_saveOrUpdate']" type="primary" icon="Plus"
+        <el-button v-auth="['withdrawIndent_withdrawCash']" type="primary" icon="Plus"
                    @click="handleAdd">提现申请</el-button>
       </div>
       <el-table v-loading="loading" :data="txList">
@@ -82,8 +82,8 @@
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
         <el-form-item label="提现类型" prop="amount" v-if="!isEdit">
           <el-radio-group v-model="form['type']" class="ml-4">
-            <el-radio :label="1">银行</el-radio>
-            <el-radio :label="2">Pix</el-radio>
+            <el-radio :label="0">银行</el-radio>
+            <el-radio :label="1">Pix</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -92,7 +92,7 @@
                            :min="0" :precision="2"
                            class="flex-1"/>
         </el-form-item>
-        <template v-if="form.type===1">
+        <template v-if="form.type===0">
           <el-form-item label="账户号码" prop="accountNumber">
             <el-input v-model="form['accountNumber']"
                       placeholder="请输入账户号码" maxlength="30" />
@@ -118,7 +118,7 @@
             <el-input v-model="form['taxId']" />
           </el-form-item>
         </template>
-        <template v-if="form.type===2">
+        <template v-if="form.type===1">
           <el-form-item label="Pix" prop="taxId">
             <el-input v-model="form['pix']" />
           </el-form-item>
@@ -188,8 +188,8 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      const { type, ...params } = form.value
-      await updateTxInfo(params)
+      // const { type, ...params } = form.value
+      await updateTxInfo(form.value)
       ElMessage({ type: 'success', message: '修改成功!' })
       editModalVisible.value = false
       await getList()
