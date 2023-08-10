@@ -39,41 +39,52 @@
                    @click="handleAdd">提现申请</el-button>
       </div>
       <el-table v-loading="loading" :data="txList">
-        <el-table-column label="ID" prop="id" width="60" />
-        <el-table-column label="订单号" prop="orderNo" width="120" />
+<!--        <el-table-column label="ID" prop="id" width="60" />-->
+        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
+        <el-table-column label="订单号" prop="orderNo" width="200" />
+        <el-table-column label="金额" prop="amount" width="120" />
+        <el-table-column label="货币" prop="currency" width="120" />
+        <el-table-column label="充值状态" prop="state" width="120" >
+          <template #default="scope">
+            <el-tag v-if="scope.row.state==='created'" type="info">二维码创建</el-tag>
+            <el-tag v-if="scope.row.state==='processing'" type="info">支付中</el-tag>
+            <el-tag v-if="scope.row.state==='success'" type="success">成功</el-tag>
+            <el-tag v-if="scope.row.state==='failed'" type="danger">失败</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
             <div>{{scope.row['dealState']===0?'待处理':'已处理'}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="金额" prop="amount" width="120" />
-        <el-table-column label="收款人" prop="name" width="120" />
         <el-table-column label="渠道类型" prop="channelType" width="120" />
+        <el-table-column label="银行手续费" prop="bankFee" width="120" />
+        <el-table-column label="平台手续费" prop="fee" width="120" />
+        <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
         <el-table-column label="收款银行帐号" prop="accountNumber" width="120" />
         <el-table-column label="Branch Code" prop="branchCode" width="120" />
         <el-table-column label="Bank code" prop="bankCode" width="120" />
         <el-table-column label="TaxId" prop="taxId" width="120" />
-        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
-        <el-table-column label="用户ID" prop="userId" width="120" />
+        <el-table-column label="下单时间" align="center" prop="oderTime" width="200">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row['oderTime']) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="描述信息" prop="description" width="120" />
-        <el-table-column label="创建时间" align="center" prop="createTime" width="200">
+        <el-table-column  label="操作" align="center"
+                         class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="逻辑删除" prop="isDeleted" width="120" >
-          <template #default="scope">
-            <div>{{!scope.row['isDeleted']||scope.row['isDeleted']===0?'未删除':'删除'}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="错误信息" prop="errMsg" width="120" />
-        <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
-          <template #default="scope">
-            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndent_editState']"></el-button>
+            <el-tooltip content="修改" placement="top" :show-after="500">
+              <el-button v-if="scope.row.roleId !== 1"
+                         link type="primary" icon="Edit"
+                         @click="handleUpdate(scope.row)"
+                         v-auth="['withdrawIndent_editState']"></el-button>
             </el-tooltip>
-            <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndent_delete']"></el-button>
+            <el-tooltip content="删除" placement="top" :show-after="500">
+              <el-button v-if="scope.row.roleId !== 1"
+                         link type="primary" icon="Delete"
+                         @click="handleDelete(scope.row)"
+                         v-auth="['withdrawIndent_delete']"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -266,7 +277,7 @@ const total = ref(0)
 const dateRange = ref([])
 const queryParams = reactive({
   currentPage: 1,
-  pageSize: 20,
+  pageSize: 15,
   endTime: undefined,
   startTime: undefined,
   orderNo: undefined

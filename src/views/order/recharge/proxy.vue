@@ -35,7 +35,7 @@
     </div>
     <div class="card">
       <el-table v-loading="loading" :data="txList">
-        <el-table-column label="ID" prop="id" width="60" />
+        <el-table-column label="App_key" prop="appKey" width="140" />
         <el-table-column label="充值订单号" prop="orderNo" width="200" />
         <el-table-column label="实充值金额" prop="rechargeMoney" width="120" />
         <el-table-column label="实际充值金额" prop="actualMoney" width="120" />
@@ -50,29 +50,17 @@
         </el-table-column>
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
-            <div>{{scope.row['dealState']===0?'待处理':'已处理'}}</div>
+            <el-tag v-if="scope.row['dealState']===0" type="warning">待处理</el-tag>
+            <el-tag v-else type="info">已处理</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="充值渠道" prop="channelType" width="120" />
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
-        <el-table-column label="App_key" prop="appKey" width="140" />
-        <el-table-column label="下单时间戳" prop="oderTime" width="200" >
+        <el-table-column label="下单时间" prop="oderTime" width="200" >
           <template #default="scope">
             {{ parseTime(scope.row['oderTime']) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="成功时间戳" prop="successTime" width="200" >
-          <template #default="scope">
-            {{ parseTime(scope.row['successTime']) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="描述信息" prop="description" width="120" />
-        <el-table-column label="错误信息" prop="errMsg" width="120" />
-        <el-table-column label="逻辑删除" prop="isDeleted" width="120" >
-          <template #default="scope">
-            <div>{{scope.row['isDeleted']===0?'未删除':'删除'}}</div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -80,6 +68,12 @@
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="成功时间" prop="successTime" width="200" >
+          <template #default="scope">
+            {{ parseTime(scope.row['successTime']) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="描述信息" prop="description" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
             <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
@@ -206,7 +200,7 @@ const total = ref(0)
 const dateRange = ref([])
 const queryParams = reactive({
   currentPage: 1,
-  pageSize: 20,
+  pageSize: 15,
   endTime: undefined,
   startTime: undefined,
   state: undefined,

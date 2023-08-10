@@ -175,7 +175,7 @@ const total = ref(0)
 const dateRange = ref([])
 const queryParams = reactive({
   currentPage: 1,
-  pageSize: 20,
+  pageSize: 15,
   endTime: undefined,
   name: undefined,
   startTime: undefined,
