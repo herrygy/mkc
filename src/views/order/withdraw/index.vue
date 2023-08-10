@@ -34,17 +34,13 @@
       </el-form>
     </div>
     <div class="card">
-      <div class="mb-10px">
-        <el-button v-auth="['withdrawIndent_withdrawCash']" type="primary" icon="Plus"
-                   @click="handleAdd">提现申请</el-button>
-      </div>
       <el-table v-loading="loading" :data="txList">
 <!--        <el-table-column label="ID" prop="id" width="60" />-->
         <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
         <el-table-column label="订单号" prop="orderNo" width="200" />
         <el-table-column label="金额" prop="amount" width="120" />
         <el-table-column label="货币" prop="currency" width="120" />
-        <el-table-column label="充值状态" prop="state" width="120" >
+        <el-table-column label="提现状态" prop="state" width="120" >
           <template #default="scope">
             <el-tag v-if="scope.row.state==='created'" type="info">二维码创建</el-tag>
             <el-tag v-if="scope.row.state==='processing'" type="info">支付中</el-tag>

@@ -28,11 +28,11 @@
     </div>
     <div class="card">
       <div class="mb-10px">
-        <el-button v-auth="['withdrawIndent_withdrawCash']" type="primary" icon="Plus"
+        <el-button v-auth="['withdrawApply_withdrawCash']" type="primary" icon="Plus"
                    @click="handleAdd">提现申请</el-button>
       </div>
       <el-table v-loading="loading" :data="txList">
-        <el-table-column label="ID" prop="id" width="60" />
+        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
         <el-table-column label="订单号" prop="orderNo" width="120" />
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
@@ -42,31 +42,23 @@
         <el-table-column label="金额" prop="amount" width="120" />
         <el-table-column label="收款人" prop="name" width="120" />
         <el-table-column label="渠道类型" prop="channelType" width="120" />
+        <el-table-column label="银行手续费" prop="bankFee" width="120" />
+        <el-table-column label="平台手续费" prop="fee" width="120" />
+        <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
         <el-table-column label="收款银行帐号" prop="accountNumber" width="120" />
         <el-table-column label="Branch Code" prop="branchCode" width="120" />
         <el-table-column label="Bank code" prop="bankCode" width="120" />
         <el-table-column label="TaxId" prop="taxId" width="120" />
-        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
-        <el-table-column label="用户ID" prop="userId" width="120" />
         <el-table-column label="描述信息" prop="description" width="120" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="逻辑删除" prop="isDeleted" width="120" >
-          <template #default="scope">
-            <div>{{!scope.row['isDeleted']||scope.row['isDeleted']===0?'未删除':'删除'}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="错误信息" prop="errMsg" width="120" />
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
-<!--            <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">-->
-<!--              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawIndentApply_saveOrUpdate']"></el-button>-->
-<!--            </el-tooltip>-->
-            <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['withdrawIndentApply_delete']"></el-button>
+            <el-tooltip content="审批" placement="top" :show-after="500">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['withdrawApply_approveWithdraw']"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -78,35 +70,37 @@
     </div>
 
     <!-- 新增提现申请 -->
-    <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
+    <el-drawer title="新增提现申请" v-model="addModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
-        <el-form-item label="提现类型" prop="amount" v-if="!isEdit">
-          <el-radio-group v-model="form['type']" class="ml-4">
+        <el-form-item label="提现类型" prop="amount">
+          <el-radio-group v-model="form['type']" class="ml-4" @change="typeChange">
             <el-radio :label="0">银行</el-radio>
             <el-radio :label="1">Pix</el-radio>
           </el-radio-group>
         </el-form-item>
-
+        <div class="ml-120px">
+          <div class="text-12px text-colorF5 leading-18px">
+            *当前最小充值额度：{{proxyUserInfo['perMinWithdraw']}} <br>
+            *当前最大充值额度：{{proxyUserInfo['perMaxWithdraw']}}
+          </div>
+        </div>
         <el-form-item label="金额" prop="amount">
           <el-input-number v-model="form['amount']"
-                           :min="0" :precision="2"
+                           :min="proxyUserInfo['perMinWithdraw'] || 0"
+                           :max="proxyUserInfo['perMaxWithdraw'] || Infinity"
+                           :step="1" :precision="2"
                            class="flex-1"/>
         </el-form-item>
         <template v-if="form.type===0">
+          <el-form-item label="渠道类型" prop="channelType">
+            <el-input v-model="form['channelType']" disabled/>
+          </el-form-item>
           <el-form-item label="账户号码" prop="accountNumber">
             <el-input v-model="form['accountNumber']"
                       placeholder="请输入账户号码" maxlength="30" />
           </el-form-item>
           <el-form-item label="银行预留名" prop="name">
             <el-input v-model="form['name']" />
-          </el-form-item>
-          <el-form-item label="渠道类型" prop="channelType">
-            <el-select v-model="form['channelType']" value-key="identifier"
-                       placeholder="Select" :teleported="false">
-              <el-option v-for="item of channelOptions" :key="item.id"
-                         :label="item.name"
-                         :value="item.identifier" />
-            </el-select>
           </el-form-item>
           <el-form-item label="Bank Code" prop="bankCode">
             <el-input v-model="form['bankCode']" />
@@ -129,28 +123,57 @@
       </el-form>
       <div class="flex justify-center">
         <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="editModalVisible=false">取 消</el-button>
+        <el-button @click="approveModalVisible=false">取 消</el-button>
       </div>
     </el-drawer>
+
+    <!-- 审批 -->
+    <el-dialog title="审批" width="400px"
+               v-model="approveModalVisible" :destroy-on-close="true">
+      <el-form :model="form" :rules="rules" ref="userRef" label-width="100px">
+        <el-form-item label="提现类型" prop="amount">
+          <el-radio-group v-model="form['type']" class="ml-4" disabled>
+            <el-radio :label="0">银行</el-radio>
+            <el-radio :label="1">Pix</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="金额" prop="amount">
+          <el-input-number v-model="form['amount']" class="flex-1" disabled/>
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="form['description']" type="textarea" maxlength="120" disabled/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="onApprove(2)" type="danger">驳回</el-button>
+          <el-button type="primary" @click="onApprove(1)">通过</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { getWithdrawList, updateTxInfo, deleteTx } from '@/api/financial/withdraw'
+import { getWithdrawList, addNew, approve } from '@/api/financial/withdraw'
 import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
+import { useProxyUser } from '@/composables/useProxyUser'
+import { useUserStore } from '@/stores/modules/user'
 
+const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
 const { channelOptions, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
 const title = ref('')
 const form = ref<any>({})
-const editModalVisible = ref(false)
+const addModalVisible = ref(false)
+const approveModalVisible = ref(false)
 const userRef = ref()
-const isEdit = ref(false)
+const userStore = useUserStore()
 
 const rules = {
   type: [{ required: true, message: '选择提现类型', trigger: 'blur' }],
@@ -158,26 +181,42 @@ const rules = {
   amount: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '银行预留名称不能为空', trigger: 'blur' }],
   channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }],
+  bankCode: [{ required: true, message: 'Bank Code不能为空', trigger: 'blur' }],
+  branchCode: [{ required: true, message: 'Branch Code不能为空', trigger: 'blur' }],
+  taxId: [{ required: true, message: 'TaxId不能为空', trigger: 'blur' }],
   pix: [{ required: true, message: 'Pix码不能为空', trigger: 'blur' }]
 }
 
 const handleAdd = async () => {
   reset()
-  isEdit.value = false
-  editModalVisible.value = true
-  title.value = '新增'
-  form.value.type = 1
-  await getChannelOptions()
+  addModalVisible.value = true
+  form.value.type = 0
+  await getProxyUserInfo()
+  form.value.channelType = proxyUserInfo.value.channelType
+  // form.value = {
+  //   accountNumber: '876543-2.',
+  //   amount: 200,
+  //   appKey: 'wex812pfqbhjq',
+  //   bankCode: '1234-5',
+  //   branchCode: '876543-2.',
+  //   channelType: 'StarkBank',
+  //   name: 'Joana da Silva',
+  //   taxId: '012.345.678-90',
+  //   type: 0,
+  //   userId: 39
+  // }
+}
+
+const typeChange = (value) => {
+  reset()
+  form.value.type = value
+  form.value.channelType = proxyUserInfo.value.channelType
 }
 
 const handleUpdate = async (rowData) => {
   reset()
-  isEdit.value = true
-  title.value = '编辑'
-  editModalVisible.value = true
-  const { createTime, dealState, errMsg, isDeleted, updateTime, ...newData } = rowData
-  form.value = newData
-  await getChannelOptions()
+  approveModalVisible.value = true
+  form.value = { ...rowData }
 }
 
 const reset = () => {
@@ -188,13 +227,21 @@ const reset = () => {
 const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
-      // const { type, ...params } = form.value
-      await updateTxInfo(form.value)
-      ElMessage({ type: 'success', message: '修改成功!' })
-      editModalVisible.value = false
+      await addNew({ ...form.value, userId: userStore.userInfo.userId, appKey: userStore.userInfo.appKey })
+      ElMessage({ type: 'success', message: '新增成功!' })
+      addModalVisible.value = false
       await getList()
     }
   })
+}
+
+const onApprove = async (state) => {
+  const { result } = await approve({
+    dealState: state,
+    id: form.value.id
+  })
+  ElMessage({ type: 'success', message: '操作成功!' })
+  await getList()
 }
 
 const handleDelete = (rowData:any = {}) => {
@@ -203,7 +250,7 @@ const handleDelete = (rowData:any = {}) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
-    await deleteTx({ id: rowData.id })
+    // await deleteTx({ id: rowData.id })
     ElMessage({
       type: 'success',
       message: '删除成功!'

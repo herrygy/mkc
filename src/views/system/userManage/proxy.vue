@@ -79,7 +79,7 @@
 
     <!-- 添加或修改代理用户配置对话框 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
-      <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
+      <el-form :model="form" :rules="rules" ref="userRef" label-width="140px">
         <el-form-item label="代理用户名称" prop="userName">
           <el-input v-model="form.userName"
                     placeholder="请输入代理用户名称" maxlength="30" />
@@ -195,7 +195,16 @@ const validateUserName = async (rule: any, value: any, callback: any) => {
 
 const rules = {
   userName: [{ required: true, validator: validateUserName, trigger: 'blur' }],
-  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
+  channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }],
+  perMaxRecharge: [{ required: true, message: '单笔最大充值不能为空', trigger: 'blur' }],
+  perMinRecharge: [{ required: true, message: '单笔最小充值不能为空', trigger: 'blur' }],
+  perRechargeFee: [{ required: true, message: '每笔充值手续费不能为空', trigger: 'blur' }],
+  perRechargeFeeRate: [{ required: true, message: '每笔充值千分比不能为空', trigger: 'blur' }],
+  perMaxWithdraw: [{ required: true, message: '单笔最大提现不能为空', trigger: 'blur' }],
+  perMinWithdraw: [{ required: true, message: '单笔最小提现不能为空', trigger: 'blur' }],
+  perWithdrawFee: [{ required: true, message: '每笔提现手续费不能为空', trigger: 'blur' }],
+  perWithdrawFeeRate: [{ required: true, message: '每笔提现千分比不能为空', trigger: 'blur' }]
 }
 
 const handleAdd = async () => {

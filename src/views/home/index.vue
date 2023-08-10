@@ -1,6 +1,7 @@
 <template>
   <div class="w-full h-full relative">
-    <div class="grid grid-cols-1 2xl:grid-cols-2">
+    <div v-if="userStore.userInfo.appKey"
+         class="grid grid-cols-1 2xl:grid-cols-2">
       <div class="col-span-1 border-1 border-black/5 rounded-12px bg-white">
         <div class="flex justify-between items-center px-15px h-50px
                     border-b-1 border-black/5 rounded-t-12px">
@@ -90,12 +91,15 @@
         </div>
       </div>
     </div>
+    <img class="w-2/3 mx-auto" src="~@/assets/images/welcome.png" alt="">
   </div>
 </template>
 
 <script setup lang="ts" name="home">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { getStatisticsInfo } from '@/api/system/statistics'
+import { useUserStore } from '@/stores/modules/user'
+const userStore = useUserStore()
 const dateRange = ref([])
 const queryParams = reactive({
   startTime: undefined,
@@ -114,7 +118,11 @@ const getInfo = async () => {
   const { result } = await getStatisticsInfo(queryParams)
   statisticsInfo.value = result || {}
 }
-getInfo()
+
+watch([() => userStore.userInfo.appKey], () => {
+  console.log(userStore.userInfo.appKey)
+  if (userStore.userInfo.appKey) getInfo()
+}, { immediate: true })
 </script>
 
 <style scoped lang="scss">
