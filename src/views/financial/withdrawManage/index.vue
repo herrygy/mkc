@@ -40,7 +40,6 @@
           </template>
         </el-table-column>
         <el-table-column label="金额" prop="amount" width="120" />
-        <el-table-column label="收款人" prop="name" width="120" />
         <el-table-column label="渠道类型" prop="channelType" width="120" />
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
