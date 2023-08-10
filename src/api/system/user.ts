@@ -144,3 +144,11 @@ export function setRechargeBackUrl (data) {
     data: data
   })
 }
+
+export function getBalance (data = {}) {
+  return request({
+    url: '/pay-management/sysUser/getBalance',
+    method: 'post',
+    data: data
+  })
+}

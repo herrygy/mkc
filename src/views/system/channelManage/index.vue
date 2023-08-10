@@ -110,7 +110,6 @@ const showSearch = ref(true)
 const loading = ref(false)
 const title = ref('')
 const form = ref<any>({})
-const roleOptions = ref([])
 const editModalVisible = ref(false)
 const channelRef = ref<any>()
 const ids = ref([])
@@ -124,8 +123,6 @@ const rules = {
 const handleAdd = async () => {
   reset()
   form.value.status = 0
-  const { result } = await getAllRole()
-  roleOptions.value = result
   editModalVisible.value = true
   title.value = '新增渠道'
 }

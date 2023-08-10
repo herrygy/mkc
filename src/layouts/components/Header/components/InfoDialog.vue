@@ -17,6 +17,9 @@
         </el-tag>
       </el-form-item>
       <template v-if="form['appKey']">
+        <el-form-item label="用户余额" prop="balance">
+          <el-input v-model="form.balance" disabled />
+        </el-form-item>
         <el-form-item label="其他操作" prop="appKey">
           <div class="">
             <el-button type="primary" @click="rechargeUrlVisible = true">修改代收回调地址</el-button>
@@ -25,7 +28,7 @@
         </el-form-item>
         <el-form-item label="" prop="appKey">
           <div class="">
-            <el-button type="primary" @click="rechargeUrlVisible = true">查看密钥</el-button>
+            <el-button type="primary" @click="keyVisible = true">查看密钥</el-button>
           </div>
         </el-form-item>
       </template>
@@ -103,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getUserDetail, setProxyBackUrl, setRechargeBackUrl } from '@/api/system/user'
+import { getUserDetail, setProxyBackUrl, setRechargeBackUrl, getBalance } from '@/api/system/user'
 import { useUserStore } from '@/stores/modules/user'
 import { ElMessage } from 'element-plus'
 const userStore = useUserStore()
@@ -112,6 +115,10 @@ const form = ref({})
 const getUserInfo = async () => {
   const { result } = await getUserDetail({ id: userStore.userInfo.userId })
   form.value = result
+  if (form.value.appKey) {
+    const res = await getBalance()
+    form.value.balance = res.result
+  }
 }
 
 const dialogVisible = ref(false)
@@ -123,7 +130,7 @@ const openDialog = () => {
 const rechargeUrlVisible = ref(false)
 const rechargeUrl = ref('')
 const onSetRechargeUrl = async () => {
-  await setRechargeBackUrl({ backUrl: rechargeUrl.value })
+  await setRechargeBackUrl({ notifyUrl: rechargeUrl.value })
   ElMessage({ type: 'success', message: '修改成功!' })
   rechargeUrlVisible.value = false
   dialogVisible.value = false
@@ -132,7 +139,7 @@ const onSetRechargeUrl = async () => {
 const withdrawUrlVisible = ref(false)
 const withdrawUrl = ref('')
 const onSetWithdrawUrl = async () => {
-  await setProxyBackUrl({ backUrl: withdrawUrl.value })
+  await setProxyBackUrl({ notifyUrl: withdrawUrl.value })
   ElMessage({ type: 'success', message: '修改成功!' })
   withdrawUrlVisible.value = false
   dialogVisible.value = false
