@@ -36,7 +36,9 @@
         <el-table-column label="订单号" prop="orderNo" width="120" />
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
-            <div>{{scope.row['dealState']===0?'待处理':'已处理'}}</div>
+            <el-tag v-if="scope.row.dealState===0" type="info">待处理</el-tag>
+            <el-tag v-if="scope.row.dealState===1" type="success">通过</el-tag>
+            <el-tag v-if="scope.row.dealState===2" type="danger">驳回</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="金额" prop="amount" width="120" />

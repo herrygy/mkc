@@ -48,12 +48,6 @@
             <el-tag v-if="scope.row.state==='failed'" type="danger">失败</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="处理状态" prop="dealState" width="120" >
-          <template #default="scope">
-            <el-tag v-if="scope.row['dealState']===0" type="warning">待处理</el-tag>
-            <el-tag v-else type="info">已处理</el-tag>
-          </template>
-        </el-table-column>
         <el-table-column label="渠道类型" prop="channelType" width="120" >
           <template #default="scope">
             {{channelMap[scope.row['channelType']]}}
