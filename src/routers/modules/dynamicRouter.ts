@@ -14,7 +14,6 @@ const modules = import.meta.glob('@/views/**/*.vue')
 export const initDynamicRouter = async () => {
   const userStore = useUserStore()
   const authStore = useAuthStore()
-  console.log(authStore.authMenuList.length)
   try {
     // 1.获取菜单列表 && 按钮权限列表
     if (authStore.authMenuList.length === 0) await authStore.getAuthMenuList({ id: userStore.userInfo.userId })

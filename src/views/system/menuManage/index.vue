@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column prop="sort" label="排序" width="60"></el-table-column>
         <el-table-column prop="funcPerms" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="path" label="路径" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="status" label="状态" width="80">
           <template #default="scope">
             <el-tag v-if="scope.row.status ===0" type="primary" >正常</el-tag>

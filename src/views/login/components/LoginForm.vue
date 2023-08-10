@@ -1,7 +1,7 @@
 <template>
   <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
     <el-form-item prop="userName">
-      <el-input v-model="loginForm.userName" placeholder="用户名：admin / user">
+      <el-input v-model="loginForm.userName" placeholder="用户名">
         <template #prefix>
           <el-icon class="el-input__icon">
             <user />
@@ -10,7 +10,7 @@
       </el-input>
     </el-form-item>
     <el-form-item prop="password">
-      <el-input v-model="loginForm.password" type="password" placeholder="密码：123456" show-password autocomplete="new-password">
+      <el-input v-model="loginForm.password" type="password" placeholder="密码" show-password autocomplete="new-password">
         <template #prefix>
           <el-icon class="el-input__icon">
             <lock />
@@ -95,7 +95,7 @@ const login = (formEl: FormInstance | undefined) => {
       keepAliveStore.setKeepAliveName()
 
       // 4.跳转到首页
-      router.push(HOME_URL)
+      router.replace(HOME_URL)
       ElNotification({
         title: getTimeState(),
         message: '欢迎登录',

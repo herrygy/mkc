@@ -36,7 +36,13 @@ service.interceptors.response.use(
     const { data } = response
     const userStore = useUserStore()
     tryHideFullScreenLoading()
-    if (data.code === ResultEnum.OVERDUE || data.code === ResultEnum.INVALID_TOKEN) {
+    if (data.code === ResultEnum.INVALID_TOKEN) {
+      userStore.setToken('')
+      router.replace(LOGIN_URL)
+      ElMessage.error('登录过期, 请重新登录')
+      return Promise.reject(data)
+    }
+    if (data.code === ResultEnum.OVERDUE) {
       userStore.setToken('')
       router.replace(LOGIN_URL)
       ElMessage.error(data.message)
