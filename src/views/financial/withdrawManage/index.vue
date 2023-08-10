@@ -79,8 +79,8 @@
         </el-form-item>
         <div class="ml-120px">
           <div class="text-12px text-colorF5 leading-18px">
-            *当前最小充值额度：{{proxyUserInfo['perMinWithdraw']}} <br>
-            *当前最大充值额度：{{proxyUserInfo['perMaxWithdraw']}}
+            *当前最小提现额度：{{proxyUserInfo['perMinWithdraw']}} <br>
+            *当前最大提现额度：{{proxyUserInfo['perMaxWithdraw']}}
           </div>
         </div>
         <el-form-item label="金额" prop="amount">
