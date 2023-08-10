@@ -91,7 +91,7 @@
         </div>
       </div>
     </div>
-    <img class="w-2/3 mx-auto" src="~@/assets/images/welcome.png" alt="">
+    <img v-else class="w-2/3 mx-auto" src="~@/assets/images/welcome.png" alt="">
   </div>
 </template>
 
