@@ -105,7 +105,7 @@
         <el-form-item label="渠道类型" prop="channelType">
           <el-select v-model="form['channelType']" value-key="identifier"
                      placeholder="Select" :teleported="false" disabled>
-            <el-option v-for="item of channelOptions" :key="item.id"
+            <el-option v-for="item of channelOptions" :key="item.identifier"
                        :label="item.name"
                        :value="item.identifier" />
           </el-select>

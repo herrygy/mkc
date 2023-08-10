@@ -120,13 +120,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
-<!--          <el-select v-model="form['channelType']" value-key="identifier"-->
-<!--                     placeholder="Select" :teleported="false">-->
-<!--            <el-option v-for="item of channelOptions" :key="item.id"-->
-<!--                       :label="item.name"-->
-<!--                       :value="item.identifier" />-->
-<!--          </el-select>-->
-          <el-input v-model="form['channelType']" disabled/>
+          <el-select v-model="form['channelType']" value-key="identifier"
+                     placeholder="Select" :teleported="false" disabled>
+            <el-option v-for="item of channelOptions" :key="item.identifier"
+                       :label="item.name"
+                       :value="item.identifier" />
+          </el-select>
         </el-form-item>
         <el-form-item label="充值状态" prop="channelType">
           <el-select v-model="form['state']"
@@ -218,6 +217,7 @@ const handleAdd = async () => {
   addModalVisible.value = true
   form.value.currency = 'BRL'
   form.value.state = 'created'
+  await getChannelOptions()
   await getProxyUserInfo()
   form.value.channelType = proxyUserInfo.value.channelType
 }

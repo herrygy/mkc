@@ -92,7 +92,12 @@
         </el-form-item>
         <template v-if="form.type===0">
           <el-form-item label="渠道类型" prop="channelType">
-            <el-input v-model="form['channelType']" disabled/>
+            <el-select v-model="form['channelType']" value-key="identifier"
+                       placeholder="Select" :teleported="false" disabled>
+              <el-option v-for="item of channelOptions" :key="item.identifier"
+                         :label="item.name"
+                         :value="item.identifier" />
+            </el-select>
           </el-form-item>
           <el-form-item label="账户号码" prop="accountNumber">
             <el-input v-model="form['accountNumber']"
@@ -191,6 +196,7 @@ const handleAdd = async () => {
   addModalVisible.value = true
   form.value.type = 0
   await getProxyUserInfo()
+  await getChannelOptions()
   form.value.channelType = proxyUserInfo.value.channelType
   // form.value = {
   //   accountNumber: '876543-2.',
