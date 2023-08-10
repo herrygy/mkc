@@ -17,6 +17,16 @@
         </el-tag>
       </el-form-item>
       <template v-if="form['appKey']">
+        <el-form-item prop="appKey">
+          <template #label>
+            <div class="flex-1 flex justify-between items-center">
+              <span>代理商商户号</span>
+              <el-button v-copy="form['appKey']"
+                         type="primary" size="small"> 复制 </el-button>
+            </div>
+          </template>
+          <el-input v-model="form['appKey']" disabled ></el-input>
+        </el-form-item>
         <el-form-item label="当前余额">
           <el-input v-model="balanceInfo['balance']" disabled >
             <template #append>{{balanceInfo['currency']}}</template>

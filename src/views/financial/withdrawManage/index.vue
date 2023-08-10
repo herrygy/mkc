@@ -44,10 +44,10 @@
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
-        <el-table-column label="收款银行帐号" prop="accountNumber" width="120" />
-        <el-table-column label="Branch Code" prop="branchCode" width="120" />
-        <el-table-column label="Bank code" prop="bankCode" width="120" />
-        <el-table-column label="TaxId" prop="taxId" width="120" />
+        <el-table-column label="收款银行帐号" prop="accountNumber" width="200" :show-overflow-tooltip="true"/>
+        <el-table-column label="Branch Code" prop="branchCode" width="120" :show-overflow-tooltip="true"/>
+        <el-table-column label="Bank code" prop="bankCode" width="120" :show-overflow-tooltip="true"/>
+        <el-table-column label="TaxId" prop="taxId" width="200" :show-overflow-tooltip="true"/>
         <el-table-column label="描述信息" prop="description" width="120" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
@@ -197,7 +197,7 @@ const handleAdd = async () => {
   //   amount: 200,
   //   appKey: 'wex812pfqbhjq',
   //   bankCode: '1234-5',
-  //   branchCode: '876543-2.',
+  //   branchCode: '876',
   //   channelType: 'StarkBank',
   //   name: 'Joana da Silva',
   //   taxId: '012.345.678-90',
