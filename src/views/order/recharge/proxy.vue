@@ -37,8 +37,11 @@
       <el-table v-loading="loading" :data="txList">
         <el-table-column label="App_key" prop="appKey" width="140" />
         <el-table-column label="充值订单号" prop="orderNo" width="200" />
-        <el-table-column label="实充值金额" prop="rechargeMoney" width="120" />
-        <el-table-column label="实际充值金额" prop="actualMoney" width="120" />
+        <el-table-column label="实充值金额" prop="rechargeMoney" width="120" >
+          <template #default="scope">
+            {{fixedNumber(scope.row['rechargeMoney']/100)}}
+          </template>
+        </el-table-column>
         <el-table-column label="货币" prop="currency" width="120" />
         <el-table-column label="充值状态" prop="state" width="120" >
           <template #default="scope">
@@ -58,7 +61,7 @@
         <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
         <el-table-column label="下单时间" prop="oderTime" width="200" >
           <template #default="scope">
-            {{ parseTime(scope.row['oderTime']) }}
+            {{ formatBrazilTime(scope.row['oderTime']) }}
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -68,7 +71,7 @@
         </el-table-column>
         <el-table-column label="成功时间" prop="successTime" width="200" >
           <template #default="scope">
-            {{ parseTime(scope.row['successTime']) }}
+            {{ formatBrazilTime(scope.row['successTime']) }}
           </template>
         </el-table-column>
         <el-table-column label="描述信息" prop="description" width="120" />
@@ -96,7 +99,7 @@
           <el-input v-model="form['orderNo']" disabled/>
         </el-form-item>
         <el-form-item label="充值金额" prop="orderNo">
-          <el-input v-model="form['rechargeMoney']" disabled>
+          <el-input :model-value="fixedNumber(form['rechargeMoney']/100)" disabled>
             <template #append>{{form['currency']}}</template>
           </el-input>
         </el-form-item>
@@ -128,7 +131,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { rechargeStatus, getProxyOrderList, updateTxInfo, deleteTx } from '@/api/order/recharge'
-import { parseTime } from '@/utils/tool.ts'
+import { parseTime, formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'

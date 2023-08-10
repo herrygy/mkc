@@ -15,9 +15,13 @@ import '@/styles/element-dark.scss'
 import '@/styles/element.scss'
 import 'virtual:svg-icons-register'
 import 'virtual:windi.css'
-
+import { dayjs } from 'element-plus'
+import DayjsTimezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 // errorHandler
 import errorHandler from '@/utils/errorHandler'
+dayjs.extend(utc)
+dayjs.extend(DayjsTimezone)
 
 const app = createApp(App)
 

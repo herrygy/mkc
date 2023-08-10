@@ -8,12 +8,14 @@
 //     console.log(e)
 //   }
 // }
-
+import { dayjs } from 'element-plus'
 export function isNumeric (val: any) {
   return val !== null && val !== '' && !isNaN(val)
 }
-
-export function parseTime (time:any, cFormat?: string) {
+export function formatBrazilTime (time) {
+  return dayjs(time).tz('Brazil/East').format('YYYY-MM-DD HH:mm:ss')
+}
+export function parseTime (time:any, cFormat?: string, isBrazil: boolean = false) {
   if (arguments.length === 0 || !time) {
     return null
   }
@@ -54,4 +56,16 @@ export function parseTime (time:any, cFormat?: string) {
     }
     return value.toString().padStart(2, '0')
   })
+}
+export function fixedNumber (num:any, decimals = 2) {
+  if (!isNumeric(num)) return num
+  const numStrArray = num.toString().split('.')
+  if (decimals === 0) return numStrArray[0]
+  if (numStrArray.length > 1) {
+    if (numStrArray[1].length >= decimals) {
+      return `${numStrArray[0]}.${numStrArray[1].slice(0, decimals)}`
+    }
+    return `${numStrArray[0]}.${numStrArray[1].padEnd(decimals, '0')}`
+  }
+  return `${numStrArray[0]}.${''.padEnd(decimals, '0')}`
 }

@@ -36,9 +36,13 @@
     <div class="card">
       <el-table v-loading="loading" :data="txList">
 <!--        <el-table-column label="ID" prop="id" width="60" />-->
-        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
+<!--        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>-->
         <el-table-column label="订单号" prop="orderNo" width="200" />
-        <el-table-column label="金额" prop="amount" width="120" />
+        <el-table-column label="金额" prop="amount" width="120" >
+          <template #default="scope">
+            {{fixedNumber(scope.row['amount']/100)}}
+          </template>
+        </el-table-column>
         <el-table-column label="货币" prop="currency" width="120" />
         <el-table-column label="提现状态" prop="state" width="120" >
           <template #default="scope">
@@ -62,7 +66,7 @@
         <el-table-column label="TaxId" prop="taxId" width="120" />
         <el-table-column label="下单时间" align="center" prop="oderTime" width="200">
           <template #default="scope">
-            <span>{{ parseTime(scope.row['oderTime']) }}</span>
+            <span>{{ formatBrazilTime(scope.row['oderTime']) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="描述信息" prop="description" width="120" />
@@ -97,8 +101,7 @@
           <el-input v-model="form['orderNo']" disabled/>
         </el-form-item>
         <el-form-item label="提现金额" prop="amount">
-          <el-input-number v-model="form['amount']"
-                           :min="0" :precision="2"
+          <el-input-number :model-value="fixedNumber(form['amount']/100)"
                            class="flex-1" disabled/>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
@@ -186,9 +189,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { withdrawStatus, getWithdrawList, updateTxState, deleteTx, addWithdraw } from '@/api/order/withdraw'
-import { parseTime } from '@/utils/tool.ts'
+import { formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, dayjs } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
 import { useProxyUser } from '@/composables/useProxyUser'
 

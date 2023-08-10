@@ -41,7 +41,11 @@
             <el-tag v-if="scope.row.dealState===2" type="danger">驳回</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="金额" prop="amount" width="120" />
+        <el-table-column label="金额" prop="amount" width="120" >
+          <template #default="scope">
+            {{fixedNumber(scope.row['amount']/100)}}
+          </template>
+        </el-table-column>
         <el-table-column label="渠道类型" prop="channelType" width="120" >
           <template #default="scope">
             {{channelMap[scope.row['channelType']]}}
@@ -148,7 +152,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="金额" prop="amount">
-          <el-input-number v-model="form['amount']" class="flex-1" disabled/>
+          <el-input-number :model-value="fixedNumber(form['amount']/100)" class="flex-1" disabled/>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input v-model="form['description']" type="textarea" maxlength="120" disabled/>
@@ -167,7 +171,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { getWithdrawList, addNew, approve } from '@/api/financial/withdraw'
-import { parseTime } from '@/utils/tool.ts'
+import { parseTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
