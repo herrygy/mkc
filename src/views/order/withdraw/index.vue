@@ -213,6 +213,9 @@ const rules = {
   amount: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '银行预留名称不能为空', trigger: 'blur' }],
   channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }],
+  bankCode: [{ required: true, message: 'Bank Code不能为空', trigger: 'blur' }],
+  branchCode: [{ required: true, message: 'Branch Code不能为空', trigger: 'blur' }],
+  taxId: [{ required: true, message: 'TaxId不能为空', trigger: 'blur' }],
   pix: [{ required: true, message: 'Pix码不能为空', trigger: 'blur' }]
 }
 
@@ -225,7 +228,7 @@ const typeChange = (value) => {
 const handleAdd = async () => {
   reset()
   addModalVisible.value = true
-  form.value.type = 1
+  form.value.type = 0
   await getProxyUserInfo()
   form.value.channelType = proxyUserInfo.value.channelType
 }
