@@ -121,7 +121,7 @@
     <el-drawer title="新增提现申请" v-model="addModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
         <el-form-item label="提现类型" prop="amount" v-if="!isEdit">
-          <el-radio-group v-model="form['type']" class="ml-4">
+          <el-radio-group v-model="form['type']" class="ml-4" @change="typeChange">
             <el-radio :label="0">银行</el-radio>
             <el-radio :label="1">Pix</el-radio>
           </el-radio-group>
@@ -199,6 +199,11 @@ const rules = {
   name: [{ required: true, message: '银行预留名称不能为空', trigger: 'blur' }],
   channelType: [{ required: true, message: '渠道类型不能为空', trigger: 'blur' }],
   pix: [{ required: true, message: 'Pix码不能为空', trigger: 'blur' }]
+}
+
+const typeChange = (value) => {
+  reset()
+  form.value.type = value
 }
 
 const handleAdd = async () => {

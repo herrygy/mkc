@@ -138,7 +138,7 @@ const onSetWithdrawUrl = async () => {
   dialogVisible.value = false
 }
 
-const keyVisible = ref(true)
+const keyVisible = ref(false)
 
 defineExpose({ openDialog })
 </script>

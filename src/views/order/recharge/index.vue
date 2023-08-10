@@ -238,13 +238,15 @@ const submitForm = async () => {
           rechargeMoney: form.value.rechargeMoney,
           state: form.value.state
         })
+        editModalVisible.value = false
         ElMessage({ type: 'success', message: '修改成功!' })
       } else {
         const { result } = await updateTxInfo(form.value)
         qrCodeUrl.value = result.pictureUrl || ''
+        addModalVisible.value = false
+        qrCodeModalVisible.value = true
         ElMessage({ type: 'success', message: '新增成功!' })
       }
-      editModalVisible.value = false
       await getList()
     }
   })
