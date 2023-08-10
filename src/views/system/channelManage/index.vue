@@ -46,8 +46,8 @@
       <el-table v-loading="loading" :data="channelList" @selection-change="handleSelectionChange">
 <!--        <el-table-column type="selection" width="55" align="center" />-->
         <el-table-column label="ID" prop="id" width="120" />
-        <el-table-column label="渠道名称" prop="name" :show-overflow-tooltip="true" width="150" />
-        <el-table-column label="渠道标识" prop="identifier" width="150" />
+        <el-table-column label="渠道标识" prop="name" :show-overflow-tooltip="true" width="150" />
+        <el-table-column label="渠道名称" prop="identifier" width="150" />
         <el-table-column label="描述信息" prop="desc" :show-overflow-tooltip="true" width="150" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
@@ -76,17 +76,17 @@
     <!-- 添加或修改用户配置对话框 -->
     <el-drawer :title="title" v-model="editModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="channelRef" label-width="80px">
-        <el-form-item label="渠道名称" prop="name">
+        <el-form-item label="渠道标识" prop="name">
           <el-input v-model="form.name"
-                    placeholder="请输入渠道名称" maxlength="30" />
+                    placeholder="请输入渠道标识" maxlength="30" />
         </el-form-item>
-        <el-form-item label="渠道标识" prop="identifier">
+        <el-form-item label="渠道名称" prop="identifier">
           <el-input v-model="form.identifier"
-                    placeholder="请输入用户名称" maxlength="30" />
+                    placeholder="请输入渠道名称" maxlength="30" />
         </el-form-item>
         <el-form-item label="描述信息" prop="desc">
           <el-input v-model="form.desc"
-                    placeholder="请输入用户名称" maxlength="120" />
+                    placeholder="描述信息" maxlength="120" />
         </el-form-item>
       </el-form>
       <div class="flex justify-center">
