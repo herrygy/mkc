@@ -53,7 +53,11 @@
             <div>{{scope.row['dealState']===0?'待处理':'已处理'}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="渠道类型" prop="channelType" width="120" />
+        <el-table-column label="渠道类型" prop="channelType" width="120" >
+          <template #default="scope">
+            {{channelMap[scope.row['channelType']]}}
+          </template>
+        </el-table-column>
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
@@ -194,7 +198,7 @@ import { useChannelSelect } from '@/composables/useChannelSelect'
 import { useProxyUser } from '@/composables/useProxyUser'
 
 const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
-const { channelOptions, getChannelOptions } = useChannelSelect()
+const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
 const form = ref<any>({})

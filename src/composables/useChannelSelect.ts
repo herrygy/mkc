@@ -11,12 +11,16 @@ export const useChannelSelect = () => {
     finished: false
   })
   const channelOptions = ref([])
+  const channelMap = ref({})
   const getChannelOptions = async () => {
     if (channelState.loading || channelState.finished) return
     channelState.loading = true
     const { result, page } = await getChannelList(channelQuery)
     channelState.loading = false
     channelOptions.value = result.list
+    channelOptions.value.forEach((item:any) => {
+      channelMap.value[item.identifier] = item.name
+    })
     channelState.loading = false
     channelState.finished = true
   }
@@ -24,6 +28,7 @@ export const useChannelSelect = () => {
     channelQuery,
     channelState,
     channelOptions,
+    channelMap,
     getChannelOptions
   }
 }

@@ -60,7 +60,11 @@
             <el-tag v-else type="info">已处理</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="充值渠道" prop="channelType" width="120" />
+        <el-table-column label="渠道类型" prop="channelType" width="120" >
+          <template #default="scope">
+            {{channelMap[scope.row['channelType']]}}
+          </template>
+        </el-table-column>
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
@@ -153,13 +157,12 @@
           </el-input>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
-          <el-input v-model="form['channelType']" disabled/>
-          <!--          <el-select v-model="form['channelType']" value-key="identifier"-->
-<!--                     placeholder="Select" :teleported="false" disabled>-->
-<!--            <el-option v-for="item of channelOptions" :key="item.id"-->
-<!--                       :label="item.name"-->
-<!--                       :value="item.identifier" />-->
-<!--          </el-select>-->
+          <el-select v-model="form['channelType']" value-key="identifier"
+                     placeholder="Select" :teleported="false" disabled>
+            <el-option v-for="item of channelOptions" :key="item.id"
+                       :label="item.name"
+                       :value="item.identifier" />
+          </el-select>
         </el-form-item>
         <el-form-item label="充值状态" prop="channelType">
           <el-select v-model="form['state']"
@@ -194,7 +197,7 @@ import { useChannelSelect } from '@/composables/useChannelSelect'
 import QrcodeVue from 'qrcode.vue'
 import { useProxyUser } from '@/composables/useProxyUser'
 
-const { channelOptions, getChannelOptions } = useChannelSelect()
+const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
 const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
 const showSearch = ref(true)
 const loading = ref(false)
@@ -217,7 +220,7 @@ const handleAdd = async () => {
   addModalVisible.value = true
   form.value.currency = 'BRL'
   form.value.state = 'created'
-  await getChannelOptions()
+  // await getChannelOptions()
   await getProxyUserInfo()
   form.value.channelType = proxyUserInfo.value.channelType
 }
@@ -226,7 +229,7 @@ const handleUpdate = async (rowData) => {
   reset()
   editModalVisible.value = true
   form.value = { ...rowData }
-  await getChannelOptions()
+  // await getChannelOptions()
 }
 
 const reset = () => {
@@ -310,7 +313,12 @@ const resetQuery = () => {
   getList()
 }
 
-getList()
+const getData = async () => {
+  await getChannelOptions()
+  await getList()
+}
+
+getData()
 </script>
 
 <style scoped></style>

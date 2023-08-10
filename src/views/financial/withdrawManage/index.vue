@@ -40,7 +40,11 @@
           </template>
         </el-table-column>
         <el-table-column label="金额" prop="amount" width="120" />
-        <el-table-column label="渠道类型" prop="channelType" width="120" />
+        <el-table-column label="渠道类型" prop="channelType" width="120" >
+          <template #default="scope">
+            {{channelMap[scope.row['channelType']]}}
+          </template>
+        </el-table-column>
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
@@ -117,7 +121,7 @@
           </el-form-item>
         </template>
         <template v-if="form.type===1">
-          <el-form-item label="Pix" prop="taxId">
+          <el-form-item label="Pix" prop="pix">
             <el-input v-model="form['pix']" />
           </el-form-item>
         </template>
@@ -169,7 +173,7 @@ import { useProxyUser } from '@/composables/useProxyUser'
 import { useUserStore } from '@/stores/modules/user'
 
 const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
-const { channelOptions, getChannelOptions } = useChannelSelect()
+const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
 const title = ref('')

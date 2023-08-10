@@ -54,7 +54,11 @@
             <el-tag v-else type="info">已处理</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="充值渠道" prop="channelType" width="120" />
+        <el-table-column label="渠道类型" prop="channelType" width="120" >
+          <template #default="scope">
+            {{channelMap[scope.row['channelType']]}}
+          </template>
+        </el-table-column>
         <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
@@ -135,7 +139,7 @@ import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
 
-const { channelOptions, getChannelOptions } = useChannelSelect()
+const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
 const form = ref<any>({})
