@@ -137,27 +137,29 @@
             <el-radio :label="1">Pix</el-radio>
           </el-radio-group>
         </el-form-item>
-
+        <div class="ml-120px">
+          <div class="text-12px text-colorF5 leading-18px">
+            *当前最小充值额度：{{proxyUserInfo['perMinWithdraw']}} <br>
+            *当前最大充值额度：{{proxyUserInfo['perMaxWithdraw']}}
+          </div>
+        </div>
         <el-form-item label="金额" prop="amount">
           <el-input-number v-model="form['amount']"
-                           :min="0" :precision="2"
+                           :min="proxyUserInfo['perMinWithdraw'] || 0"
+                           :max="proxyUserInfo['perMaxWithdraw'] || Infinity"
+                           :step="1" :precision="2"
                            class="flex-1"/>
         </el-form-item>
         <template v-if="form.type===0">
+          <el-form-item label="渠道类型" prop="channelType">
+            <el-input v-model="form['channelType']" disabled/>
+          </el-form-item>
           <el-form-item label="账户号码" prop="accountNumber">
             <el-input v-model="form['accountNumber']"
                       placeholder="请输入账户号码" maxlength="30" />
           </el-form-item>
           <el-form-item label="银行预留名" prop="name">
             <el-input v-model="form['name']" />
-          </el-form-item>
-          <el-form-item label="渠道类型" prop="channelType">
-            <el-select v-model="form['channelType']" value-key="identifier"
-                       placeholder="Select" :teleported="false">
-              <el-option v-for="item of channelOptions" :key="item.id"
-                         :label="item.name"
-                         :value="item.identifier" />
-            </el-select>
           </el-form-item>
           <el-form-item label="Bank Code" prop="bankCode">
             <el-input v-model="form['bankCode']" />
@@ -193,7 +195,9 @@ import { parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
+import { useProxyUser } from '@/composables/useProxyUser'
 
+const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
 const { channelOptions, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)
@@ -215,13 +219,15 @@ const rules = {
 const typeChange = (value) => {
   reset()
   form.value.type = value
+  form.value.channelType = proxyUserInfo.value.channelType
 }
 
 const handleAdd = async () => {
   reset()
   addModalVisible.value = true
   form.value.type = 1
-  await getChannelOptions()
+  await getProxyUserInfo()
+  form.value.channelType = proxyUserInfo.value.channelType
 }
 
 const handleUpdate = async (rowData) => {

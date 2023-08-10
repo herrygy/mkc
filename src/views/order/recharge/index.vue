@@ -100,9 +100,17 @@
     <!-- 新增订单信息 -->
     <el-drawer title="新增订单" v-model="addModalVisible" :destroy-on-close="true" size="450px">
       <el-form :model="form" :rules="rules" ref="userRef" label-width="120px">
+        <div class="ml-120px">
+          <div class="text-12px text-colorF5 leading-18px">
+            *当前最小充值额度：{{proxyUserInfo['perMinRecharge']}} <br>
+            *当前最大充值额度：{{proxyUserInfo['perMaxRecharge']}}
+          </div>
+        </div>
         <el-form-item label="充值金额" prop="rechargeMoney">
           <el-input-number v-model="form['rechargeMoney']"
-                           :min="0" :step="0.01" :precision="2"
+                           :min="proxyUserInfo['perMinRecharge'] || 0"
+                           :max="proxyUserInfo['perMaxRecharge'] || Infinity"
+                           :step="1" :precision="2"
                            class="flex-1" />
         </el-form-item>
         <el-form-item label="货币" prop="currency">
@@ -112,12 +120,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form['channelType']" value-key="identifier"
-                     placeholder="Select" :teleported="false">
-            <el-option v-for="item of channelOptions" :key="item.id"
-                       :label="item.name"
-                       :value="item.identifier" />
-          </el-select>
+<!--          <el-select v-model="form['channelType']" value-key="identifier"-->
+<!--                     placeholder="Select" :teleported="false">-->
+<!--            <el-option v-for="item of channelOptions" :key="item.id"-->
+<!--                       :label="item.name"-->
+<!--                       :value="item.identifier" />-->
+<!--          </el-select>-->
+          <el-input v-model="form['channelType']" disabled/>
         </el-form-item>
         <el-form-item label="充值状态" prop="channelType">
           <el-select v-model="form['state']"
@@ -145,12 +154,13 @@
           </el-input>
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
-          <el-select v-model="form['channelType']" value-key="identifier"
-                     placeholder="Select" :teleported="false" disabled>
-            <el-option v-for="item of channelOptions" :key="item.id"
-                       :label="item.name"
-                       :value="item.identifier" />
-          </el-select>
+          <el-input v-model="form['channelType']" disabled/>
+          <!--          <el-select v-model="form['channelType']" value-key="identifier"-->
+<!--                     placeholder="Select" :teleported="false" disabled>-->
+<!--            <el-option v-for="item of channelOptions" :key="item.id"-->
+<!--                       :label="item.name"-->
+<!--                       :value="item.identifier" />-->
+<!--          </el-select>-->
         </el-form-item>
         <el-form-item label="充值状态" prop="channelType">
           <el-select v-model="form['state']"
@@ -208,10 +218,8 @@ const handleAdd = async () => {
   addModalVisible.value = true
   form.value.currency = 'BRL'
   form.value.state = 'created'
-  await Promise.all([
-    getChannelOptions(),
-    getProxyUserInfo()
-  ])
+  await getProxyUserInfo()
+  form.value.channelType = proxyUserInfo.value.channelType
 }
 
 const handleUpdate = async (rowData) => {
