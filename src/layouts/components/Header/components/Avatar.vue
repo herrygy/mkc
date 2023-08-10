@@ -49,6 +49,7 @@ const onLogout = () => {
     userStore.setToken('')
     router.replace(LOGIN_URL)
     ElMessage.success('退出登录成功！')
+    window.location.reload()
   })
 }
 

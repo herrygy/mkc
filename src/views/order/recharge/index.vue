@@ -183,8 +183,10 @@ import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
 import QrcodeVue from 'qrcode.vue'
+import { useProxyUser } from '@/composables/useProxyUser'
 
 const { channelOptions, getChannelOptions } = useChannelSelect()
+const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
 const showSearch = ref(true)
 const loading = ref(false)
 const form = ref<any>({})
@@ -206,7 +208,10 @@ const handleAdd = async () => {
   addModalVisible.value = true
   form.value.currency = 'BRL'
   form.value.state = 'created'
-  await getChannelOptions()
+  await Promise.all([
+    getChannelOptions(),
+    getProxyUserInfo()
+  ])
 }
 
 const handleUpdate = async (rowData) => {
