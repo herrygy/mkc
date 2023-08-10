@@ -8,7 +8,8 @@ export const useUserStore = defineStore({
     token: '',
     userInfo: {
       name: 'user',
-      userId: -1
+      userId: -1,
+      appKey: null
     }
   }),
   getters: {},

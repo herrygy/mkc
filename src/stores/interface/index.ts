@@ -29,7 +29,8 @@ export interface UserState {
   token: string;
   userInfo: {
     name: string,
-    userId: number
+    userId: number,
+    appKey: string | null
   };
 }
 

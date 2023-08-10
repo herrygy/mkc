@@ -17,9 +17,16 @@
         </el-tag>
       </el-form-item>
       <template v-if="form['appKey']">
-        <el-form-item label="用户余额" prop="balance">
-          <el-input v-model="form.balance" disabled />
+        <el-form-item label="当前余额">
+          <el-input v-model="balanceInfo['balance']" disabled >
+            <template #append>{{balanceInfo['currency']}}</template>
+          </el-input>
         </el-form-item>
+<!--        <el-form-item label="预扣金额">-->
+<!--          <el-input v-model="balanceInfo['preDeductMoney']" disabled >-->
+<!--            <template #append>{{balanceInfo['currency']}}</template>-->
+<!--          </el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="其他操作" prop="appKey">
           <div class="">
             <el-button type="primary" @click="rechargeUrlVisible = true">修改代收回调地址</el-button>
@@ -112,12 +119,13 @@ import { ElMessage } from 'element-plus'
 const userStore = useUserStore()
 
 const form = ref({})
+const balanceInfo = ref({})
 const getUserInfo = async () => {
   const { result } = await getUserDetail({ id: userStore.userInfo.userId })
   form.value = result
   if (form.value.appKey) {
     const res = await getBalance()
-    form.value.balance = res.result
+    balanceInfo.value = res.result
   }
 }
 
