@@ -133,7 +133,7 @@ import { parseTime, formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
-import { useUserStore } from "@/stores/modules/user";
+import { useUserStore } from '@/stores/modules/user'
 
 const userStore = useUserStore()
 const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
