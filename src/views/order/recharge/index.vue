@@ -68,7 +68,7 @@
         </el-table-column>
         <el-table-column label="成功时间" prop="successTime" width="200" >
           <template #default="scope">
-            <span>{{ formatBrazilTime(scope.row.createTime) }}</span>
+            <span>{{ formatBrazilTime(scope.row['successTime']) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="描述信息" prop="description" width="120" />
