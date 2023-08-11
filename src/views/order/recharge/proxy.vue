@@ -35,7 +35,7 @@
     </div>
     <div class="card">
       <el-table v-loading="loading" :data="txList">
-        <el-table-column label="App_key" prop="appKey" width="140" />
+        <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
         <el-table-column label="充值订单号" prop="orderNo" width="200" />
         <el-table-column label="实充值金额" prop="rechargeMoney" width="120" >
           <template #default="scope">
@@ -133,7 +133,9 @@ import { parseTime, formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
+import { useUserStore } from "@/stores/modules/user";
 
+const userStore = useUserStore()
 const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
 const loading = ref(false)

@@ -5,11 +5,11 @@
                :model="queryParams" :inline="true"
                label-width="68px">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
-<!--          <el-form-item class="col-span-1" label="订单号" prop="orderNo">-->
-<!--            <el-input v-model="queryParams.orderNo"-->
-<!--                      clearable placeholder="请输入订单号"-->
-<!--                      @keyup.enter="handleQuery" />-->
-<!--          </el-form-item>-->
+          <el-form-item class="col-span-1" label="商户号" prop="orderNo">
+            <el-input v-model="queryParams.proxyNo"
+                      clearable placeholder="请输入商户号"
+                      @keyup.enter="handleQuery" />
+          </el-form-item>
           <el-form-item class="col-span-1" label="时间">
             <el-date-picker class="w-full"
                             v-model="dateRange"
@@ -32,7 +32,7 @@
                    @click="handleAdd">提现申请</el-button>
       </div>
       <el-table v-loading="loading" :data="txList">
-        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>
+        <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
         <el-table-column label="订单号" prop="orderNo" width="120" />
         <el-table-column label="处理状态" prop="dealState" width="120" >
           <template #default="scope">
@@ -280,7 +280,7 @@ const queryParams = reactive({
   pageSize: 15,
   endTime: undefined,
   startTime: undefined,
-  orderNo: undefined
+  proxyNo: undefined
 })
 const txList = ref([])
 const getList = async () => {

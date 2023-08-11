@@ -5,18 +5,16 @@
                :model="queryParams" :inline="true"
                label-width="68px">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
+          <el-form-item class="col-span-1" label="商户号" prop="proxyNo">
+            <el-input v-model="queryParams.proxyNo"
+                      clearable placeholder="请输入商户号"
+                      @keyup.enter="handleQuery" />
+          </el-form-item>
           <el-form-item class="col-span-1" label="订单号" prop="orderNo">
             <el-input v-model="queryParams.orderNo"
                       clearable placeholder="请输入订单号"
                       @keyup.enter="handleQuery" />
           </el-form-item>
-<!--          <el-form-item class="col-span-1" label="提现状态" prop="status">-->
-<!--            <el-select class="w-full" v-model="queryParams.state"-->
-<!--                       placeholder="提现状态" clearable>-->
-<!--              <el-option v-for="dict in rechargeStatus" :key="dict.value"-->
-<!--                         :label="dict.label" :value="dict.value" />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
           <el-form-item class="col-span-1" label="创建时间">
             <el-date-picker class="w-full"
                             v-model="dateRange"
@@ -35,8 +33,7 @@
     </div>
     <div class="card">
       <el-table v-loading="loading" :data="txList">
-<!--        <el-table-column label="ID" prop="id" width="60" />-->
-<!--        <el-table-column label="App_key" prop="appKey" width="120" :show-overflow-tooltip="true"/>-->
+        <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
         <el-table-column label="订单号" prop="orderNo" width="200" />
         <el-table-column label="金额" prop="amount" width="120" >
           <template #default="scope">
@@ -193,7 +190,9 @@ import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox, dayjs } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
 import { useProxyUser } from '@/composables/useProxyUser'
+import { useUserStore } from '@/stores/modules/user'
 
+const userStore = useUserStore()
 const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
 const { channelOptions, channelMap, getChannelOptions } = useChannelSelect()
 const showSearch = ref(true)
@@ -286,7 +285,8 @@ const queryParams = reactive({
   pageSize: 15,
   endTime: undefined,
   startTime: undefined,
-  orderNo: undefined
+  orderNo: undefined,
+  proxyNo: undefined
 })
 const txList = ref([])
 const getList = async () => {

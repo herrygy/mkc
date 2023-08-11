@@ -74,7 +74,11 @@ const login = (formEl: FormInstance | undefined) => {
       // 1.执行登录接口
       const { result } = await loginApi({ ...loginForm, password: md5(loginForm.password) })
       userStore.setToken(result.token)
-      userStore.setUserInfo({ name: result.userName, userId: result.userId, appKey: result.appKey || null })
+      userStore.setUserInfo({
+        name: result.userName,
+        userId: result.userId,
+        appKey: result.appKey || null
+      })
       if (result.menuList && result.menuList.length > 0) {
         authStore.setMenuList(result.menuList || [])
       } else {

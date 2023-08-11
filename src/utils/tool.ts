@@ -13,6 +13,7 @@ export function isNumeric (val: any) {
   return val !== null && val !== '' && !isNaN(val)
 }
 export function formatBrazilTime (time) {
+  if (!time) return null
   return dayjs(time).tz('Brazil/East').format('YYYY-MM-DD HH:mm:ss')
 }
 export function parseTime (time:any, cFormat?: string, isBrazil: boolean = false) {

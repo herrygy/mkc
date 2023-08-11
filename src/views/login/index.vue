@@ -8,7 +8,7 @@
       <div class="login-form">
         <div class="login-logo">
 <!--          <img class="w-30px" src="@/assets/images/logo.svg" alt="" />-->
-          <h2 class="text-20px">Makcpay-Admin</h2>
+          <h2 class="text-20px">HQ-mkcpay</h2>
         </div>
         <LoginForm />
       </div>
