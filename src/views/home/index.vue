@@ -47,7 +47,7 @@
                         flex items-center justify-between ">
               <span>成功率</span>
               <span class="text-primary text-16px text-primary">
-                {{statisticsInfo['rechargeRate']}}%
+                {{statisticsInfo['rechargeRate']||0}}%
               </span>
             </div>
             <div class="bg-black/5 h-36px px-10px rounded-6px
@@ -77,7 +77,7 @@
                         flex items-center justify-between ">
               <span>成功率</span>
               <span class="text-primary text-16px text-primary">
-                {{statisticsInfo['withdrawRate']}}%
+                {{statisticsInfo['withdrawRate']||0}}%
               </span>
             </div>
             <div class="bg-black/5 h-36px px-10px rounded-6px
