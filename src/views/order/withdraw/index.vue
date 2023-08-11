@@ -5,7 +5,8 @@
                :model="queryParams" :inline="true"
                label-width="68px">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
-          <el-form-item class="col-span-1" label="商户号" prop="proxyNo">
+          <el-form-item v-if="!userStore.userInfo.appKey"
+                        class="col-span-1" label="商户号" prop="proxyNo">
             <el-input v-model="queryParams.proxyNo"
                       clearable placeholder="请输入商户号"
                       @keyup.enter="handleQuery" />
@@ -14,6 +15,13 @@
             <el-input v-model="queryParams.orderNo"
                       clearable placeholder="请输入订单号"
                       @keyup.enter="handleQuery" />
+          </el-form-item>
+          <el-form-item class="col-span-1" label="提现状态" prop="status">
+            <el-select class="w-full" v-model="queryParams.state"
+                       placeholder="提现状态" clearable>
+              <el-option v-for="dict in withdrawStatus" :key="dict.value"
+                         :label="dict.label" :value="dict.value" />
+            </el-select>
           </el-form-item>
           <el-form-item class="col-span-1" label="创建时间">
             <el-date-picker class="w-full"
@@ -44,8 +52,8 @@
         <el-table-column label="货币" prop="currency" width="120" />
         <el-table-column label="提现状态" prop="state" width="120" >
           <template #default="scope">
-            <el-tag v-if="scope.row.state==='created'" type="info">二维码创建</el-tag>
-            <el-tag v-if="scope.row.state==='processing'" type="info">支付中</el-tag>
+            <el-tag v-if="scope.row.state==='created'" type="info">创建中</el-tag>
+            <el-tag v-if="scope.row.state==='canceled'" type="info">已取消</el-tag>
             <el-tag v-if="scope.row.state==='success'" type="success">成功</el-tag>
             <el-tag v-if="scope.row.state==='failed'" type="danger">失败</el-tag>
           </template>
@@ -55,9 +63,13 @@
             {{channelMap[scope.row['channelType']]}}
           </template>
         </el-table-column>
-        <el-table-column label="平台手续费" prop="fee" width="120" />
+        <el-table-column label="平台手续费" prop="fee" width="120" >
+          <template #default="scope">
+            {{fixedNumber(scope.row['fee']/100)}}
+          </template>
+        </el-table-column>
         <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
-        <el-table-column label="收款银行帐号" prop="accountNumber" width="120" />
+        <el-table-column label="收款银行帐号" prop="accountNumber" width="120" :show-overflow-tooltip="true"/>
         <el-table-column label="Branch Code" prop="branchCode" width="120" />
         <el-table-column label="Bank code" prop="bankCode" width="120" />
         <el-table-column label="TaxId" prop="taxId" width="120" />
@@ -234,7 +246,6 @@ const handleUpdate = async (rowData) => {
   reset()
   editModalVisible.value = true
   form.value = { ...rowData }
-  await getChannelOptions()
 }
 
 const reset = () => {
@@ -287,7 +298,8 @@ const queryParams = reactive({
   endTime: undefined,
   startTime: undefined,
   orderNo: undefined,
-  proxyNo: undefined
+  proxyNo: undefined,
+  state: undefined
 })
 const txList = ref([])
 const getList = async () => {
@@ -316,7 +328,12 @@ const resetQuery = () => {
   getList()
 }
 
-getList()
+const getData = async () => {
+  await getChannelOptions()
+  await getList()
+}
+
+getData()
 </script>
 
 <style scoped></style>

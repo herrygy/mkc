@@ -1,10 +1,10 @@
 import request from '@/api'
 
 export const withdrawStatus = [
-  { value: 'created', label: '二维码创建' },
-  { value: 'processing', label: '支付中' },
+  { value: 'created', label: '创建中' },
   { value: 'success', label: '成功' },
-  { value: 'failed', label: '失败' }
+  { value: 'failed', label: '失败' },
+  { value: 'canceled', label: '已取消' }
 ]
 // 查询列表
 export function getWithdrawList (data) {

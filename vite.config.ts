@@ -48,7 +48,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           rewrite: path => path.replace(/^\/api/, '')
         },
         '/pay-management': {
-          target: 'http://47.108.163.219:10070',
+          target: 'https://doc.mkcpay.com/api',
+          // target: 'http://47.108.163.219:10070',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/pay-management/, '/pay-management')
         }

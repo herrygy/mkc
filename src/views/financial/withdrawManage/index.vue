@@ -10,6 +10,13 @@
                       clearable placeholder="请输入商户号"
                       @keyup.enter="handleQuery" />
           </el-form-item>
+          <el-form-item class="col-span-1" label="提现状态" prop="status">
+            <el-select class="w-full" v-model="queryParams.state"
+                       placeholder="提现状态" clearable>
+              <el-option v-for="dict in withdrawStatus" :key="dict.value"
+                         :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
           <el-form-item class="col-span-1" label="时间">
             <el-date-picker class="w-full"
                             v-model="dateRange"
@@ -169,6 +176,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { withdrawStatus } from '@/api/order/withdraw'
 import { getWithdrawList, addNew, approve } from '@/api/financial/withdraw'
 import { parseTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
@@ -205,7 +213,7 @@ const handleAdd = async () => {
   addModalVisible.value = true
   form.value.type = 0
   await getProxyUserInfo()
-  await getChannelOptions()
+  // await getChannelOptions()
   form.value.channelType = proxyUserInfo.value.channelType
   // form.value = {
   //   accountNumber: '876543-2.',
@@ -280,7 +288,8 @@ const queryParams = reactive({
   pageSize: 15,
   endTime: undefined,
   startTime: undefined,
-  proxyNo: undefined
+  proxyNo: undefined,
+  state: undefined
 })
 const txList = ref([])
 const getList = async () => {
@@ -309,7 +318,12 @@ const resetQuery = () => {
   getList()
 }
 
-getList()
+const getData = async () => {
+  await getChannelOptions()
+  await getList()
+}
+
+getData()
 </script>
 
 <style scoped></style>

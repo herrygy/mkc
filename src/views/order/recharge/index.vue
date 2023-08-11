@@ -5,7 +5,8 @@
                :model="queryParams" :inline="true"
                label-width="68px">
         <div class="grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-5 gap-20px">
-          <el-form-item class="col-span-1" label="商户号" prop="proxyNo">
+          <el-form-item v-if="!userStore.userInfo.appKey"
+                        class="col-span-1" label="商户号" prop="proxyNo">
             <el-input v-model="queryParams.proxyNo"
                       clearable placeholder="请输入商户号"
                       @keyup.enter="handleQuery" />
@@ -66,7 +67,11 @@
             {{channelMap[scope.row['channelType']]}}
           </template>
         </el-table-column>
-        <el-table-column label="平台手续费" prop="fee" width="120" />
+        <el-table-column label="平台手续费" prop="fee" width="120" >
+          <template #default="scope">
+            {{fixedNumber(scope.row['fee']/100)}}
+          </template>
+        </el-table-column>
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>

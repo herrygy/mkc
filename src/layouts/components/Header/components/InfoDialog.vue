@@ -4,7 +4,10 @@
       <el-form-item label="用户名称" prop="userName">
         <el-input v-model="form.userName" disabled />
       </el-form-item>
-      <el-form-item :label="form['appKey']?'商户号':'用户ID'" prop="userId">
+      <el-form-item v-if="form['appKey']" label="商户号" prop="proxyNo">
+        <el-input v-model="form.proxyNo" disabled />
+      </el-form-item>
+      <el-form-item v-else label="用户ID" prop="userId">
         <el-input v-model="form.userId" disabled />
       </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
@@ -18,9 +21,7 @@
       </el-form-item>
       <template v-if="form['appKey']">
         <el-form-item label="代理商商户号">
-          <el-input v-model="form['appKey']" disabled >
-            <template #append>{{form['appKey']}}</template>
-          </el-input>
+          <el-input v-model="form['appKey']" disabled ></el-input>
         </el-form-item>
         <el-form-item label="当前余额">
           <el-input v-model="balanceInfo['balance']" disabled >
