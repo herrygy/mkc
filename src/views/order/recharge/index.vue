@@ -61,7 +61,6 @@
           </template>
         </el-table-column>
         <el-table-column label="平台手续费" prop="fee" width="120" />
-        <el-table-column label="三方标识" prop="identId" width="200" :show-overflow-tooltip="true" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
