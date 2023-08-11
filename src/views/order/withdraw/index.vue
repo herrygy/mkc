@@ -34,7 +34,8 @@
     <div class="card">
       <el-table v-loading="loading" :data="txList">
         <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
-        <el-table-column label="订单号" prop="orderNo" width="200" />
+        <el-table-column label="订单号" prop="orderNo" width="200" :show-overflow-tooltip="true"/>
+        <el-table-column label="下游订单号" prop="externalOrderNo" width="200" :show-overflow-tooltip="true" />
         <el-table-column label="金额" prop="amount" width="120" >
           <template #default="scope">
             {{fixedNumber(scope.row['amount']/100)}}

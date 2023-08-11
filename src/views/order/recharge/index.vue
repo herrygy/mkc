@@ -47,7 +47,6 @@
       <el-table v-loading="loading" :data="txList">
         <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
         <el-table-column label="充值订单号" prop="orderNo" width="200" :show-overflow-tooltip="true" />
-        <el-table-column label="下游订单号" prop="externalOrderNo" width="200" :show-overflow-tooltip="true" />
         <el-table-column label="实充值金额" prop="rechargeMoney" width="120" >
           <template #default="scope">
             {{fixedNumber(scope.row['rechargeMoney']/100)}}
