@@ -57,7 +57,6 @@
             {{channelMap[scope.row['channelType']]}}
           </template>
         </el-table-column>
-        <el-table-column label="银行手续费" prop="bankFee" width="120" />
         <el-table-column label="平台手续费" prop="fee" width="120" />
         <el-table-column label="收款人" prop="name" width="200" :show-overflow-tooltip="true"/>
         <el-table-column label="收款银行帐号" prop="accountNumber" width="120" />
