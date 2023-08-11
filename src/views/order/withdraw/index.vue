@@ -4,7 +4,7 @@
       <el-form ref="queryRef" class="c-form-inline"
                :model="queryParams" :inline="true"
                label-width="68px">
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
+        <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-20px">
           <el-form-item v-if="!userStore.userInfo.appKey"
                         class="col-span-1" label="商户号" prop="proxyNo">
             <el-input v-model="queryParams.proxyNo"
@@ -32,7 +32,7 @@
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"></el-date-picker>
           </el-form-item>
-          <div class="col-span-1 flex justify-end">
+          <div class="flex justify-end" :class="userStore.userInfo.appKey?'col-span-1':'col-span-1 md:col-span-2'">
             <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
           </div>
@@ -315,7 +315,10 @@ const handleQuery = () => {
   queryParams.currentPage = 1
   queryParams.startTime = undefined
   queryParams.endTime = undefined
-  if (dateRange.value && dateRange.value.length === 2) [queryParams.startTime, queryParams.endTime] = dateRange.value
+  if (dateRange.value && dateRange.value.length === 2) {
+    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
+    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+  }
   getList()
 }
 const queryRef = ref()

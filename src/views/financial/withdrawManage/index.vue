@@ -305,7 +305,10 @@ const handleQuery = () => {
   queryParams.currentPage = 1
   queryParams.startTime = undefined
   queryParams.endTime = undefined
-  if (dateRange.value && dateRange.value.length === 2) [queryParams.startTime, queryParams.endTime] = dateRange.value
+  if (dateRange.value && dateRange.value.length === 2) {
+    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
+    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+  }
   getList()
 }
 const queryRef = ref()

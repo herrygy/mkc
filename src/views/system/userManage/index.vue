@@ -5,7 +5,7 @@
                class="c-form-inline"
                :model="queryParams"
                :inline="true" label-width="68px">
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-20px">
+        <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-20px">
           <el-form-item class="col-span-1" label="用户名称" prop="userName">
             <el-input v-model="queryParams.userName"
                       clearable placeholder="请输入用户名称"
@@ -22,10 +22,10 @@
             <el-date-picker class="w-full"
                             v-model="dateRange"
                             value-format="YYYY-MM-DD"
-                            type="daterange"
+                            type="datetimerange"
                             range-separator="-"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"></el-date-picker>
+                            start-placeholder="开始时间"
+                            end-placeholder="结束时间"></el-date-picker>
           </el-form-item>
           <div class="col-span-1 flex justify-end">
             <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -375,7 +375,10 @@ const handleQuery = () => {
   queryParams.currentPage = 1
   queryParams.startTime = undefined
   queryParams.endTime = undefined
-  if (dateRange.value && dateRange.value.length === 2) [queryParams.startTime, queryParams.endTime] = dateRange.value
+  if (dateRange.value && dateRange.value.length === 2) {
+    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
+    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+  }
   getList()
 }
 const queryRef = ref()

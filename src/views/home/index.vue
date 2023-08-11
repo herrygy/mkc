@@ -6,14 +6,13 @@
         <div class="flex justify-between items-center px-15px h-50px
                     border-b-1 border-black/5 rounded-t-12px">
           <el-form class="c-form-inline flex gap-20px" :inline="true">
-            <el-form-item label="日期">
+            <el-form-item label="时间">
               <el-date-picker class="w-full"
                               v-model="dateRange"
-                              value-format="YYYY-MM-DD"
-                              type="daterange"
+                              type="datetimerange"
                               range-separator="-"
-                              start-placeholder="开始日期"
-                              end-placeholder="结束日期"></el-date-picker>
+                              start-placeholder="开始时间"
+                              end-placeholder="结束时间"></el-date-picker>
             </el-form-item>
             <div class="flex justify-end">
               <el-button type="primary" icon="Search" @click="getInfo">搜索</el-button>
@@ -54,7 +53,7 @@
                         flex items-center justify-between ">
               <span>代收手续费</span>
               <span class="text-primary text-16px text-primary">
-                {{statisticsInfo['rechargeFee']}}
+                {{fixedNumber(statisticsInfo['rechargeFee']/100, 2)}}
               </span>
             </div>
           </div>
@@ -84,7 +83,7 @@
                         flex items-center justify-between ">
               <span>代付手续费</span>
               <span class="text-primary text-16px text-primary">
-                {{statisticsInfo['withdrawFee']}}
+                {{fixedNumber(statisticsInfo['withdrawFee']/100, 2)}}
               </span>
             </div>
           </div>
@@ -99,22 +98,27 @@
 import { reactive, ref, watch } from 'vue'
 import { getStatisticsInfo } from '@/api/system/statistics'
 import { useUserStore } from '@/stores/modules/user'
+import { fixedNumber } from '@/utils/tool'
+
 const userStore = useUserStore()
 const dateRange = ref([])
 const queryParams = reactive({
-  startTime: undefined,
-  endTime: undefined
+  startTimes: undefined,
+  endTimes: undefined
 })
 const resetQuery = () => {
   dateRange.value = []
-  queryParams.startTime = undefined
-  queryParams.endTime = undefined
+  queryParams.startTimes = undefined
+  queryParams.endTimes = undefined
   getInfo()
 }
 
 const statisticsInfo = ref({})
 const getInfo = async () => {
-  if (dateRange.value) [queryParams.startTime, queryParams.endTime] = dateRange.value
+  if (dateRange.value && dateRange.value.length === 2) {
+    queryParams.startTimes = new Date(dateRange.value[0]).getTime() as any
+    queryParams.endTimes = new Date(dateRange.value[1]).getTime() as any
+  }
   const { result } = await getStatisticsInfo(queryParams)
   statisticsInfo.value = result || {}
 }
