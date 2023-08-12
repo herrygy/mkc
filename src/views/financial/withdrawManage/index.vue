@@ -67,7 +67,7 @@
         <el-table-column label="描述信息" prop="description" width="120" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
-            <span>{{ formatBrazilTime(scope.row.createTime) }}</span>
+            <span>{{ formatBrazilTime(scope.row.createTime, true) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">

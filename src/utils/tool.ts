@@ -12,8 +12,12 @@ import { dayjs } from 'element-plus'
 export function isNumeric (val: any) {
   return val !== null && val !== '' && !isNaN(val)
 }
-export function formatBrazilTime (time) {
+export function formatBrazilTime (time, isZero = false) {
   if (!time) return null
+  if (isZero) {
+    time = new Date(time).getTime() - (3 * 60 * 60 * 1000)
+    return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+  }
   return dayjs(time).tz('Brazil/East').format('YYYY-MM-DD HH:mm:ss')
 }
 export function parseTime (time:any, cFormat?: string, isBrazil: boolean = false) {

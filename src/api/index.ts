@@ -7,6 +7,7 @@ import { ResultEnum } from '@/enums/httpEnum'
 import { checkStatus } from './helper/checkStatus'
 import { useUserStore } from '@/stores/modules/user'
 import router from '@/routers'
+// import { useRouter } from 'vue-router'
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   noLoading?: boolean;
@@ -40,12 +41,14 @@ service.interceptors.response.use(
       userStore.setToken('')
       router.replace(LOGIN_URL)
       ElMessage.error('登录过期, 请重新登录')
+      window.location.reload()
       return Promise.reject(data)
     }
     if (data.code === ResultEnum.OVERDUE) {
       userStore.setToken('')
       router.replace(LOGIN_URL)
       ElMessage.error(data.message)
+      window.location.reload()
       return Promise.reject(data)
     }
     if (data.code && data.code !== ResultEnum.SUCCESS) {
