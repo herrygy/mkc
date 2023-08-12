@@ -13,7 +13,7 @@ export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 const service = axios.create({
-  baseURL: import.meta.env.VITE_USER_NODE_ENV === 'production' ? 'https://doc.mkcpay.com/api' : '',
+  // baseURL: import.meta.env.VITE_USER_NODE_ENV === 'production' ? 'https://doc.mkcpay.com/api' : '',
   timeout: ResultEnum.TIMEOUT as number,
   withCredentials: true
 })
