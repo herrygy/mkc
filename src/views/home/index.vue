@@ -31,9 +31,12 @@
             <div class="bg-black/5 h-36px px-10px rounded-6px
                         flex items-center justify-between ">
               <span>代收成功金额</span>
-              <span class="text-primary text-16px text-primary">
-                {{statisticsInfo['rechargeAmount']}}
-              </span>
+              <div>
+                <span class="text-primary text-16px text-primary">
+                {{fixedNumber(statisticsInfo['rechargeAmount']/100, 2)}}
+                </span>
+                <span class="px-10px">BRL</span>
+              </div>
             </div>
             <div class="bg-black/5 h-36px px-10px rounded-6px
                         flex items-center justify-between ">
@@ -52,18 +55,24 @@
             <div class="bg-black/5 h-36px px-10px rounded-6px
                         flex items-center justify-between ">
               <span>代收手续费</span>
-              <span class="text-primary text-16px text-primary">
+              <div>
+                   <span class="text-primary text-16px text-primary">
                 {{fixedNumber(statisticsInfo['rechargeFee']/100, 2)}}
               </span>
+                <span class="px-10px">BRL</span>
+              </div>
             </div>
           </div>
           <div class="col-span-1 flex flex-col gap-10px py-20px">
             <div class="bg-black/5 h-36px px-10px rounded-6px
                         flex items-center justify-between ">
               <span>代付成功金额</span>
-              <span class="text-primary text-16px text-primary">
-                {{statisticsInfo['withdrawAmount']}}
-              </span>
+              <div>
+                <span class="text-primary text-16px text-primary">
+                {{fixedNumber(statisticsInfo['withdrawAmount']/100, 2)}}
+                </span>
+                <span class="px-10px">BRL</span>
+              </div>
             </div>
             <div class="bg-black/5 h-36px px-10px rounded-6px
                         flex items-center justify-between ">
@@ -82,9 +91,12 @@
             <div class="bg-black/5 h-36px px-10px rounded-6px
                         flex items-center justify-between ">
               <span>代付手续费</span>
-              <span class="text-primary text-16px text-primary">
-                {{fixedNumber(statisticsInfo['withdrawFee']/100, 2)}}
-              </span>
+              <div>
+                <span class="text-primary text-16px text-primary">
+                  {{fixedNumber(statisticsInfo['withdrawFee']/100, 2)}}
+                </span>
+                <span class="px-10px">BRL</span>
+              </div>
             </div>
           </div>
         </div>
