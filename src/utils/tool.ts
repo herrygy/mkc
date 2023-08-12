@@ -14,10 +14,9 @@ export function isNumeric (val: any) {
 }
 export function formatBrazilTime (time, isZero = false) {
   if (!time) return null
-  time = '2023-08-12 08:42:09'
   if (isZero) {
-    time = new Date(time).getTime()
-  //   return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+    time = new Date(time).getTime() - (3 * 60 * 60 * 1000)
+    return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
   }
   return dayjs(time).tz('Brazil/East').format('YYYY-MM-DD HH:mm:ss')
 }
