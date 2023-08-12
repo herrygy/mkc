@@ -20,9 +20,6 @@
         </el-tag>
       </el-form-item>
       <template v-if="form['appKey']">
-        <el-form-item label="代理商商户号">
-          <el-input v-model="form['appKey']" disabled ></el-input>
-        </el-form-item>
         <el-form-item label="当前余额">
           <el-input v-model="balanceInfo['balance']" disabled >
             <template #append>{{balanceInfo['currency']}}</template>

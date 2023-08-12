@@ -67,7 +67,7 @@
         <el-table-column label="描述信息" prop="description" width="120" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="200">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <span>{{ formatBrazilTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
@@ -178,7 +178,7 @@
 import { reactive, ref } from 'vue'
 import { withdrawStatus } from '@/api/order/withdraw'
 import { getWithdrawList, addNew, approve } from '@/api/financial/withdraw'
-import { parseTime, fixedNumber } from '@/utils/tool.ts'
+import { formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
