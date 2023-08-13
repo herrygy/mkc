@@ -198,7 +198,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { withdrawStatus, getWithdrawList, updateTxState, deleteTx, addWithdraw } from '@/api/order/withdraw'
-import { formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
+import { formatBrazilTime, fixedNumber, formatLocalTimeToUTC } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox, dayjs } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
@@ -316,8 +316,8 @@ const handleQuery = () => {
   queryParams.startTime = undefined
   queryParams.endTime = undefined
   if (dateRange.value && dateRange.value.length === 2) {
-    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
-    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+    queryParams.startTime = formatLocalTimeToUTC(dateRange.value[0]) as any
+    queryParams.endTime = formatLocalTimeToUTC(dateRange.value[1]) as any
   }
   getList()
 }

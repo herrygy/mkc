@@ -71,9 +71,10 @@
             {{fixedNumber(scope.row['fee']/100)}}
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="200">
+        <el-table-column label="创建时间" align="left" prop="createTime" width="280">
           <template #default="scope">
-            <span>{{ formatBrazilTime(scope.row.createTime, true) }}</span>
+            <span>{{ formatBrazilTime(scope.row.createTime, true) }} (巴西-3时区)</span> <br>
+            <span>{{ parseTime(scope.row.createTime) }} (0时区)</span>
           </template>
         </el-table-column>
         <el-table-column label="成功时间" prop="successTime" width="200" >
@@ -188,7 +189,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { rechargeStatus, getOrderList, updateTxInfo, deleteTx, updateTxState } from '@/api/order/recharge'
-import { parseTime, formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
+import { parseTime, formatBrazilTime, fixedNumber, formatLocalTimeToUTC, formatUTCToLocal } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
@@ -298,8 +299,8 @@ const handleQuery = () => {
   queryParams.startTime = undefined
   queryParams.endTime = undefined
   if (dateRange.value && dateRange.value.length === 2) {
-    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
-    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+    queryParams.startTime = formatLocalTimeToUTC(dateRange.value[0]) as any
+    queryParams.endTime = formatLocalTimeToUTC(dateRange.value[1]) as any
   }
   getList()
 }

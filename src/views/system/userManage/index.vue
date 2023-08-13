@@ -194,7 +194,7 @@ import {
 } from '@/api/system/user'
 import { getChannelList } from '@/api/system/channel'
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh } from '@element-plus/icons-vue'
-import { parseTime } from '@/utils/tool.ts'
+import { formatLocalTimeToUTC, parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import md5 from 'js-md5'
@@ -376,8 +376,8 @@ const handleQuery = () => {
   queryParams.startTime = undefined
   queryParams.endTime = undefined
   if (dateRange.value && dateRange.value.length === 2) {
-    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
-    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+    queryParams.startTime = formatLocalTimeToUTC(dateRange.value[0]) as any
+    queryParams.endTime = formatLocalTimeToUTC(dateRange.value[1]) as any
   }
   getList()
 }

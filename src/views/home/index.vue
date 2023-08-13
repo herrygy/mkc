@@ -110,7 +110,7 @@
 import { reactive, ref, watch } from 'vue'
 import { getStatisticsInfo } from '@/api/system/statistics'
 import { useUserStore } from '@/stores/modules/user'
-import { fixedNumber } from '@/utils/tool'
+import { fixedNumber, formatLocalTimeToUTC } from '@/utils/tool'
 
 const userStore = useUserStore()
 const dateRange = ref([])
@@ -128,8 +128,8 @@ const resetQuery = () => {
 const statisticsInfo = ref({})
 const getInfo = async () => {
   if (dateRange.value && dateRange.value.length === 2) {
-    queryParams.startTimes = new Date(dateRange.value[0]).getTime() as any
-    queryParams.endTimes = new Date(dateRange.value[1]).getTime() as any
+    queryParams.startTimes = formatLocalTimeToUTC(dateRange.value[0]) as any
+    queryParams.endTimes = formatLocalTimeToUTC(dateRange.value[1]) as any
   }
   const { result } = await getStatisticsInfo(queryParams)
   statisticsInfo.value = result || {}

@@ -133,7 +133,7 @@ import { reactive, ref, toRefs } from 'vue'
 import { roleStatus, getRoleList, getRoleInfoById, updateRole, addRole, deleteRole } from '@/api/system/role'
 import { getAllMenuList } from '@/api/system/menu'
 import { CirclePlus, Delete, EditPen, Download, Upload, View, Refresh } from '@element-plus/icons-vue'
-import { parseTime } from '@/utils/tool.ts'
+import { formatLocalTimeToUTC, parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -301,8 +301,8 @@ const handleQuery = () => {
   queryParams.startTime = undefined
   queryParams.endTime = undefined
   if (dateRange.value && dateRange.value.length === 2) {
-    queryParams.startTime = new Date(dateRange.value[0]).getTime() as any
-    queryParams.endTime = new Date(dateRange.value[1]).getTime() as any
+    queryParams.startTime = formatLocalTimeToUTC(dateRange.value[0]) as any
+    queryParams.endTime = formatLocalTimeToUTC(dateRange.value[1]) as any
   }
   getList()
 }

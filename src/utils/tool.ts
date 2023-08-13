@@ -74,3 +74,16 @@ export function fixedNumber (num:any, decimals = 2) {
   }
   return `${numStrArray[0]}.${''.padEnd(decimals, '0')}`
 }
+
+export function formatLocalTimeToUTC (time) {
+  const offsetTime = 3 * 60 * 60 * 1000
+  const utcTime = new Date(time).getTime() + offsetTime
+  console.log(dayjs(utcTime).format('YYYY-MM-DD HH:mm:ss'))
+  return utcTime
+}
+
+export function formatUTCToLocal (time) {
+  const offsetTime = new Date().getTimezoneOffset() * 60000
+  time = new Date(time).getTime() - offsetTime
+  return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+}
