@@ -27,7 +27,16 @@ export function getProxyOrderList (data) {
   })
 }
 
-// 保存修改信息
+// 修改代收状态
+export function updateTxState (data) {
+  return request({
+    url: '/pay-management/rechargeIndent/editState',
+    method: 'post',
+    data: data
+  })
+}
+
+// 新增
 export function updateTxInfo (data) {
   return request({
     url: '/pay-management/rechargeIndent/saveOrUpdate',

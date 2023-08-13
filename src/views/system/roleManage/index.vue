@@ -209,7 +209,7 @@ const submitForm = async () => {
         ...form.value,
         menuIds: selectedMenuIds
       }).then(response => {
-        ElMessage({ type: 'success', message: '修改成功!' })
+        ElMessage({ type: 'success', message: '修改成功! 重新登录后生效' })
         editVisible.value = false
         getList()
       })

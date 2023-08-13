@@ -85,7 +85,7 @@
         <el-table-column label="操作" align="center" class-name="small-padding" fixed="right" width="120">
           <template #default="scope">
             <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
-              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['rechargeIndent_saveOrUpdate']"></el-button>
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-auth="['rechargeIndent_editState']"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1" :show-after="500">
               <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-auth="['rechargeIndent_delete']"></el-button>
@@ -187,7 +187,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { rechargeStatus, getOrderList, updateTxInfo, deleteTx } from '@/api/order/recharge'
+import { rechargeStatus, getOrderList, updateTxInfo, deleteTx, updateTxState } from '@/api/order/recharge'
 import { parseTime, formatBrazilTime, fixedNumber } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -240,11 +240,8 @@ const submitForm = async () => {
   userRef.value.validate(async (valid) => {
     if (valid) {
       if (form.value.id) {
-        await updateTxInfo({
-          channelType: form.value.channelType,
-          currency: form.value.currency,
+        await updateTxState({
           id: form.value.id,
-          rechargeMoney: form.value.rechargeMoney,
           state: form.value.state
         })
         editModalVisible.value = false

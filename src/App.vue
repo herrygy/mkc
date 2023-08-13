@@ -41,11 +41,4 @@ const assemblySize = computed(() => globalStore.assemblySize)
 
 // element button config
 const buttonConfig = reactive({ autoInsertSpace: false })
-
-// 新增用户： 即新增管理员
-// 新增代理： 新增代理商 可新增下级代理
-// 充值订单：（代收订单）; 生成收款二维码
-// 提现记录：（代付订单）
-// 财务管理->提现申请： 银行提现、pix提现、usdt提现
-// 商户余额数据（暂无）
 </script>
