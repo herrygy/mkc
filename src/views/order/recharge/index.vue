@@ -26,6 +26,8 @@
           <el-form-item class="col-span-1" label="创建时间">
             <el-date-picker class="w-full"
                             v-model="dateRange"
+                            format="YYYY/MM/DD HH:mm:ss"
+                            value-format="YYYY/MM/DD HH:mm:ss"
                             type="datetimerange"
                             range-separator="-"
                             start-placeholder="开始时间"
@@ -190,7 +192,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { rechargeStatus, getOrderList, updateTxInfo, deleteTx, updateTxState, exportData } from '@/api/order/recharge'
-import { parseTime, formatBrazilTime, fixedNumber, formatLocalTimeToUTC, formatUTCToLocal } from '@/utils/tool.ts'
+import { parseTime, formatBrazilTime, fixedNumber, formatLocalTimeToUTC } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
@@ -302,6 +304,7 @@ const handleQuery = () => {
   queryParams.startTime = undefined
   queryParams.endTime = undefined
   if (dateRange.value && dateRange.value.length === 2) {
+    // console.log(dateRange.value)
     queryParams.startTime = formatLocalTimeToUTC(dateRange.value[0]) as any
     queryParams.endTime = formatLocalTimeToUTC(dateRange.value[1]) as any
   }

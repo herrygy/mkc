@@ -21,6 +21,8 @@
             <el-date-picker class="w-full"
                             v-model="dateRange"
                             type="datetimerange"
+                            format="YYYY/MM/DD HH:mm:ss"
+                            value-format="YYYY/MM/DD HH:mm:ss"
                             range-separator="-"
                             start-placeholder="开始时间"
                             end-placeholder="结束时间"></el-date-picker>

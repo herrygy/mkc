@@ -20,7 +20,8 @@
           <el-form-item class="col-span-1" label="时间">
             <el-date-picker class="w-full"
                             v-model="dateRange"
-                            value-format="YYYY-MM-DD"
+                            format="YYYY/MM/DD HH:mm:ss"
+                            value-format="YYYY/MM/DD HH:mm:ss"
                             type="daterange"
                             range-separator="-"
                             start-placeholder="开始日期"
