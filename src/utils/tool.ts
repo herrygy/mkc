@@ -77,9 +77,7 @@ export function fixedNumber (num:any, decimals = 2) {
 
 export function formatLocalTimeToUTC (time) {
   const offsetTime = 3 * 60 * 60 * 1000
-  const utcTime = new Date(time).getTime() + offsetTime
-  console.log(dayjs(utcTime).format('YYYY-MM-DD HH:mm:ss'))
-  return utcTime
+  return new Date(time).getTime() + offsetTime
 }
 
 export function formatUTCToLocal (time) {

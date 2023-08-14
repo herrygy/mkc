@@ -40,6 +40,12 @@
       </el-form>
     </div>
     <div class="card">
+      <div class="mb-10px">
+        <el-button v-auth="['withdrawIndent_export']"
+                   type="primary" icon="Download"
+                   :disabled="txList.length===0"
+                   @click="handleExport">导出</el-button>
+      </div>
       <el-table v-loading="loading" :data="txList">
         <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
         <el-table-column label="订单号" prop="orderNo" width="200" :show-overflow-tooltip="true"/>
@@ -87,12 +93,6 @@
                          link type="primary" icon="Edit"
                          @click="handleUpdate(scope.row)"
                          v-auth="['withdrawIndent_editState']"></el-button>
-            </el-tooltip>
-            <el-tooltip content="删除" placement="top" :show-after="500">
-              <el-button v-if="scope.row.roleId !== 1"
-                         link type="primary" icon="Delete"
-                         @click="handleDelete(scope.row)"
-                         v-auth="['withdrawIndent_delete']"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -197,13 +197,14 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { withdrawStatus, getWithdrawList, updateTxState, deleteTx, addWithdraw } from '@/api/order/withdraw'
+import { withdrawStatus, getWithdrawList, updateTxState, deleteTx, addWithdraw, exportData } from '@/api/order/withdraw'
 import { formatBrazilTime, fixedNumber, formatLocalTimeToUTC } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox, dayjs } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
 import { useProxyUser } from '@/composables/useProxyUser'
 import { useUserStore } from '@/stores/modules/user'
+import { useDownload } from '@/hooks/useDownload'
 
 const userStore = useUserStore()
 const { proxyUserInfo, getProxyUserInfo } = useProxyUser()
@@ -334,6 +335,15 @@ const resetQuery = () => {
 const getData = async () => {
   await getChannelOptions()
   await getList()
+}
+
+const handleExport = async () => {
+  await useDownload(
+    exportData,
+    '代收订单',
+    queryParams,
+    false
+  )
 }
 
 getData()

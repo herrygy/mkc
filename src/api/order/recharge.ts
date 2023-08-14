@@ -53,3 +53,12 @@ export function deleteTx (data) {
     params: data
   })
 }
+
+export function exportData (data) {
+  return request({
+    url: '/pay-management/rechargeIndent/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
