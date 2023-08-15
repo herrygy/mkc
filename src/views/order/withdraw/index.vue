@@ -3,17 +3,22 @@
     <div v-show="showSearch" class="card mb-5px">
       <el-form ref="queryRef" class="c-form-inline"
                :model="queryParams" :inline="true"
-               label-width="68px">
-        <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-20px">
+               label-width="90px">
+        <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-20px">
           <el-form-item v-if="!userStore.userInfo.appKey"
                         class="col-span-1" label="商户号" prop="proxyNo">
             <el-input v-model="queryParams.proxyNo"
                       clearable placeholder="请输入商户号"
                       @keyup.enter="handleQuery" />
           </el-form-item>
-          <el-form-item class="col-span-1" label="订单号" prop="orderNo">
+          <el-form-item class="col-span-1" label="平台订单号" prop="orderNo">
             <el-input v-model="queryParams.orderNo"
-                      clearable placeholder="请输入订单号"
+                      clearable placeholder="请输入平台订单号"
+                      @keyup.enter="handleQuery" />
+          </el-form-item>
+          <el-form-item class="col-span-1" label="外部订单号" prop="orderNo">
+            <el-input v-model="queryParams.externalOrderNo"
+                      clearable placeholder="请输入外部订单号"
                       @keyup.enter="handleQuery" />
           </el-form-item>
           <el-form-item class="col-span-1" label="提现状态" prop="status">
@@ -33,7 +38,7 @@
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"></el-date-picker>
           </el-form-item>
-          <div class="flex justify-end" :class="userStore.userInfo.appKey?'col-span-1':'col-span-1 md:col-span-2'">
+          <div class="flex justify-end" :class="userStore.userInfo.appKey?'col-span-1':'col-span-1'">
             <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
           </div>
@@ -49,8 +54,8 @@
       </div>
       <el-table v-loading="loading" :data="txList">
         <el-table-column v-if="!userStore.userInfo.appKey" label="商户号" prop="proxyNo" width="120" />
-        <el-table-column label="订单号" prop="orderNo" width="200" :show-overflow-tooltip="true"/>
-        <el-table-column label="下游订单号" prop="externalOrderNo" width="200" :show-overflow-tooltip="true" />
+        <el-table-column label="平台订单号" prop="orderNo" width="200" :show-overflow-tooltip="true"/>
+        <el-table-column label="外部订单号" prop="externalOrderNo" width="200" :show-overflow-tooltip="true" />
         <el-table-column label="金额" prop="amount" width="120" >
           <template #default="scope">
             {{fixedNumber(scope.row['amount']/100)}}
@@ -80,6 +85,12 @@
         <el-table-column label="Branch Code" prop="branchCode" width="120" />
         <el-table-column label="Bank code" prop="bankCode" width="120" />
         <el-table-column label="TaxId" prop="taxId" width="120" />
+        <el-table-column label="创建时间" align="left" prop="createTime" width="280">
+          <template #default="scope">
+            <span>{{ formatBrazilTime(scope.row.createTime, true) }} (巴西-3时区)</span> <br>
+            <span>{{ parseTime(scope.row.createTime) }} (0时区)</span>
+          </template>
+        </el-table-column>
         <el-table-column label="下单时间" align="center" prop="oderTime" width="200">
           <template #default="scope">
             <span>{{ formatBrazilTime(scope.row['oderTime']) }}</span>
@@ -199,7 +210,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { withdrawStatus, getWithdrawList, updateTxState, deleteTx, addWithdraw, exportData } from '@/api/order/withdraw'
-import { formatBrazilTime, fixedNumber, formatLocalTimeToUTC } from '@/utils/tool.ts'
+import { formatBrazilTime, fixedNumber, formatLocalTimeToUTC, parseTime } from '@/utils/tool.ts'
 import Pagination from '@/components/Pagination/index.vue'
 import { ElMessage, ElMessageBox, dayjs } from 'element-plus'
 import { useChannelSelect } from '@/composables/useChannelSelect'
@@ -300,6 +311,7 @@ const queryParams = reactive({
   endTime: undefined,
   startTime: undefined,
   orderNo: undefined,
+  externalOrderNo: undefined,
   proxyNo: undefined,
   state: undefined
 })
