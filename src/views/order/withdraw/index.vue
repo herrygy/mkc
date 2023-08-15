@@ -351,6 +351,12 @@ const getData = async () => {
 }
 
 const handleExport = async () => {
+  if ((new Date(dateRange.value[1]).getTime() - new Date(dateRange.value[0]).getTime()) > 7 * 24 * 60 * 6000) {
+    ElMessageBox.alert('* 仅支持导出时间跨度为一周的数据，当前时间范围超过一周，请重新选择', '系统提示', {
+      confirmButtonText: '确认'
+    })
+    return
+  }
   await useDownload(
     exportData,
     '代收订单',
